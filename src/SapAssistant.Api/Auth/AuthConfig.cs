@@ -63,13 +63,28 @@ public static class AuthConfig
                 o.ResponseType = "code";
                 o.ResponseMode = "query";
                 o.UsePkce = true;
-                o.SaveTokens = true;
+
+                // We don't need the OAuth tokens after sign-in (no downstream API
+                // call uses them) and saving them inflates the auth cookie past
+                // 4KB, forcing ASP.NET to chunk it into sap-assistant-auth + C1
+                // + C2. Some browsers silently drop newly-issued cookies
+                // (Correlation/Nonce) when a domain is at its cookie quota, so
+                // keeping the auth cookie small is critical to OIDC reliability.
+                o.SaveTokens = false;
 
                 // With auth code + query response mode the callback is a top-level GET,
                 // so SameSite=Lax is sufficient and avoids Edge/Safari tracking prevention
                 // dropping SameSite=None cookies in some configurations.
                 o.CorrelationCookie.SameSite = SameSiteMode.Lax;
                 o.NonceCookie.SameSite = SameSiteMode.Lax;
+
+                // Default cookie path is the CallbackPath ("/signin-oidc"). Broaden
+                // it to "/" so the cookie is sent on any request to the origin.
+                // This is defense in depth against subtle path-matching issues
+                // observed in production (correlation cookie was never sent back
+                // by Edge on the /signin-oidc callback despite path being correct).
+                o.CorrelationCookie.Path = "/";
+                o.NonceCookie.Path = "/";
 
                 // Defense in depth: never let a remote auth failure produce an opaque 500
                 // (Edge renders that as ERR_UNSAFE_REDIRECT). Redirect to / with a query

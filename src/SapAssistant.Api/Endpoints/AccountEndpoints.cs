@@ -12,9 +12,20 @@ public static class AccountEndpoints
     {
         var frontendBaseUrl = cfg["FrontendBaseUrl"] ?? "/";
 
-        app.MapGet("/signin", ([FromQuery] string? returnUrl) =>
+        app.MapGet("/signin", ([FromQuery] string? returnUrl, HttpContext http) =>
         {
             var safeReturnUrl = SafeReturnUrl(returnUrl, frontendBaseUrl);
+
+            // If the user already has a valid session, do NOT issue a fresh OIDC
+            // challenge. Every challenge sets a new Correlation+Nonce cookie pair;
+            // repeated re-entry piles up stale cookies and can push a domain past
+            // its browser cookie quota, silently dropping the cookies the new
+            // flow needs. Just send the user to their destination.
+            if (http.User.Identity?.IsAuthenticated == true)
+            {
+                return Results.Redirect(safeReturnUrl);
+            }
+
             return Results.Challenge(
                 new AuthenticationProperties { RedirectUri = safeReturnUrl },
                 [OpenIdConnectDefaults.AuthenticationScheme]);
