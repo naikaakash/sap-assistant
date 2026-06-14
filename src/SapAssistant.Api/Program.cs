@@ -38,7 +38,7 @@ var api = app.MapGroup("/api");
 api.MapGet("/hello", () => new { message = "Hello from SapAssistant.Api", utc = DateTime.UtcNow })
    .WithName("Hello");
 
-app.MapAccountEndpoints(builder.Configuration);
+app.MapAccountEndpoints(builder.Configuration, app.Environment);
 app.MapContestEndpoints();
 app.MapChatEndpoints();
 

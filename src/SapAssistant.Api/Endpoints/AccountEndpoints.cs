@@ -8,7 +8,7 @@ namespace SapAssistant.Api.Endpoints;
 
 public static class AccountEndpoints
 {
-    public static IEndpointRouteBuilder MapAccountEndpoints(this IEndpointRouteBuilder app, IConfiguration cfg)
+    public static IEndpointRouteBuilder MapAccountEndpoints(this IEndpointRouteBuilder app, IConfiguration cfg, IHostEnvironment env)
     {
         var frontendBaseUrl = cfg["FrontendBaseUrl"] ?? "/";
 
@@ -42,7 +42,12 @@ public static class AccountEndpoints
             });
         }).WithName("Me");
 
-        app.MapGet("/", () => Results.Redirect(frontendBaseUrl)).ExcludeFromDescription();
+        // Only redirect / in dev (where the SPA lives on a different port).
+        // In prod the static-file middleware + SPA fallback serves index.html.
+        if (env.IsDevelopment() || env.EnvironmentName == "Testing")
+        {
+            app.MapGet("/", () => Results.Redirect(frontendBaseUrl)).ExcludeFromDescription();
+        }
 
         return app;
     }
