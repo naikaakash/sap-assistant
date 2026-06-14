@@ -79,22 +79,49 @@ public static class AccountEndpoints
     }
 
     private static string SafeReturnUrl(string? candidate, string frontendBaseUrl)
+        => SafeReturnUrlInternal(candidate, frontendBaseUrl);
+
+    // Visible to tests; do not call from production code outside MapAccountEndpoints.
+    internal static string SafeReturnUrlInternal(string? candidate, string frontendBaseUrl)
     {
         if (string.IsNullOrWhiteSpace(candidate))
         {
             return frontendBaseUrl;
         }
 
+        // Reject any candidate the .NET Uri parser will not classify as a clean
+        // relative path or http(s) absolute URL. In particular: on Windows,
+        // `Uri.TryCreate("/contest", UriKind.Absolute, ...)` returns true and
+        // produces `file:///contest`, which Edge then refuses to follow after
+        // the OIDC callback with ERR_UNSAFE_REDIRECT.
+
+        // Same-origin absolute URLs (http/https only).
         if (Uri.TryCreate(candidate, UriKind.Absolute, out var abs) &&
+            (abs.Scheme == Uri.UriSchemeHttp || abs.Scheme == Uri.UriSchemeHttps) &&
             Uri.TryCreate(frontendBaseUrl, UriKind.Absolute, out var feBase) &&
+            (feBase.Scheme == Uri.UriSchemeHttp || feBase.Scheme == Uri.UriSchemeHttps) &&
             abs.Host == feBase.Host)
         {
             return abs.ToString();
         }
 
-        if (Uri.TryCreate(candidate, UriKind.Relative, out _))
+        // Relative path on this origin. Only accept candidates that start with a
+        // single `/` and have no scheme/authority component, so we never
+        // accidentally redirect to `//evil.com/...` (protocol-relative) or a
+        // back-slash variant Windows would normalize into a UNC path.
+        if (candidate.StartsWith('/')
+            && !candidate.StartsWith("//", StringComparison.Ordinal)
+            && !candidate.StartsWith("/\\", StringComparison.Ordinal))
         {
-            return frontendBaseUrl.TrimEnd('/') + "/" + candidate.TrimStart('/');
+            // FrontendBaseUrl="/" → return "/contest" as-is (a clean relative
+            // URL the browser will resolve against the current origin).
+            // FrontendBaseUrl="https://app.example.com" → return absolute.
+            if (Uri.TryCreate(frontendBaseUrl, UriKind.Absolute, out var feAbs) &&
+                (feAbs.Scheme == Uri.UriSchemeHttp || feAbs.Scheme == Uri.UriSchemeHttps))
+            {
+                return new Uri(feAbs, candidate).ToString();
+            }
+            return candidate;
         }
 
         return frontendBaseUrl;

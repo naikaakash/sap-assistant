@@ -17,4 +17,8 @@
     <ProjectReference Include="..\SapAssistant.ServiceDefaults\SapAssistant.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="SapAssistant.Api.Tests" />
+  </ItemGroup>
+
 </Project>
