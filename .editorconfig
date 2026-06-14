@@ -1,0 +1,31 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{cs,csx}]
+indent_size = 4
+
+# C# code style (kept as suggestion; not enforced on build)
+dotnet_diagnostic.CA2007.severity = none       # ConfigureAwait not required in ASP.NET Core
+
+# Use file-scoped namespaces
+csharp_style_namespace_declarations = file_scoped:warning
+
+# Allow primary constructors / records / target-typed new
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_primary_constructors = true:suggestion
+
+[*.{json,jsonc,yml,yaml}]
+indent_size = 2
+
+[*.{ts,tsx,js,jsx,mjs,cjs}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

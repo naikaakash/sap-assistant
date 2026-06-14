@@ -1,0 +1,93 @@
+# ---------------------------------------------------------------------------
+# .NET
+# ---------------------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Bb]uild/
+[Pp]ublish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.swp
+*.tmp
+*.log
+*.bak
+*.pdb
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+TestResults/
+*.coverage
+*.coveragexml
+coverage.json
+coverage*.xml
+*.trx
+
+# Rider / ReSharper
+_ReSharper*/
+.idea/
+*.DotSettings.user
+
+# Visual Studio Code (workspace-local only; check in shared settings)
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/mcp.json
+
+# ---------------------------------------------------------------------------
+# Node / Vite / React
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------------------------------------------------------------------------
+# Secrets — NEVER commit
+# ---------------------------------------------------------------------------
+appsettings.*.Local.json
+*.local.env
+.env
+.env.*
+!.env.example
+secrets.json
+*.pfx
+*.p12
+*.key
+*.pem
+
+# Azure
+*.PublishSettings
+.azure/
+
+# ---------------------------------------------------------------------------
+# OS
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------------
+# Test outputs
+# ---------------------------------------------------------------------------
+playwright-report/
+playwright/.cache/
+test-results/
+
+# ---------------------------------------------------------------------------
+# Misc
+# ---------------------------------------------------------------------------
+*.tsbuildinfo

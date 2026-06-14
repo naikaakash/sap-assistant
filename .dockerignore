@@ -1,0 +1,44 @@
+# Source control
+.git/
+.gitignore
+.gitattributes
+
+# Build outputs
+**/bin/
+**/obj/
+**/out/
+**/dist/
+**/node_modules/
+**/.vite/
+**/TestResults/
+**/playwright-report/
+**/test-results/
+
+# IDE / editor
+.vs/
+.vscode/
+.idea/
+
+# Docs and meta — not needed inside container
+docs/
+*.md
+LICENSE
+
+# Tests
+tests/
+
+# Infra
+infra/
+
+# CI
+.github/
+
+# Local-dev secrets / env
+.env
+.env.*
+appsettings.*.Local.json
+secrets.json
+
+# OS
+.DS_Store
+Thumbs.db
