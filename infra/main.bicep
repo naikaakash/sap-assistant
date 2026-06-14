@@ -136,6 +136,7 @@ resource app 'Microsoft.App/containerApps@2024-10-02-preview' = {
             { name: 'ASPNETCORE_ENVIRONMENT',  value: 'Production' }
             { name: 'ASPNETCORE_URLS',         value: 'http://+:8080' }
             { name: 'KeyVault__Name',          value: keyVaultName }
+            { name: 'FrontendBaseUrl',         value: '/' }
             { name: 'AZURE_CLIENT_ID',         value: uami.properties.clientId }
             { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appi.properties.ConnectionString }
             { name: 'OTEL_EXPORTER_OTLP_ENDPOINT', value: 'https://${appi.properties.AppId}.in.applicationinsights.azure.com/' }
