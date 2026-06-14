@@ -48,6 +48,40 @@ public static class AuthConfig
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(configuration.GetSection("AzureAd"));
 
+        // Force authorization code flow with query response mode. Two reasons:
+        //   1. Modern best practice (PKCE-capable, tokens never in URL fragment / form body).
+        //   2. The callback arrives as a top-level GET redirect from login.microsoftonline.com,
+        //      so the OIDC correlation/nonce cookies can be SameSite=Lax. That sidesteps
+        //      browsers (Edge, Safari) that block third-party cookies — form_post would
+        //      require SameSite=None+Secure cookies on a cross-site POST, which get dropped
+        //      when third-party cookies are blocked, causing "Correlation failed".
+        services.Configure<OpenIdConnectOptions>(
+            OpenIdConnectDefaults.AuthenticationScheme,
+            o =>
+            {
+                o.ResponseType = "code";
+                o.ResponseMode = "query";
+                o.UsePkce = true;
+                o.SaveTokens = true;
+
+                // Defense in depth: never let a remote auth failure produce an opaque 500
+                // (Edge renders that as ERR_UNSAFE_REDIRECT). Redirect to / with a query
+                // string the SPA can read and surface to the user.
+                o.Events.OnRemoteFailure = ctx =>
+                {
+                    ctx.HandleResponse();
+                    var reason = Uri.EscapeDataString(ctx.Failure?.Message ?? "unknown");
+                    ctx.Response.Redirect($"/?auth=error&reason={reason}");
+                    return Task.CompletedTask;
+                };
+                o.Events.OnAccessDenied = ctx =>
+                {
+                    ctx.HandleResponse();
+                    ctx.Response.Redirect("/?auth=denied");
+                    return Task.CompletedTask;
+                };
+            });
+
         // Microsoft.Identity.Web wires the plain "Cookies" scheme — configure THAT, not the
         // ASP.NET Identity application cookie. Use Configure<TOptions>(scheme, ...) so it
         // overrides anything M.I.W. set.
