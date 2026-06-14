@@ -6,6 +6,9 @@
 [Oo]ut/
 [Bb]uild/
 [Pp]ublish/
+# SPA build output is copied here at build time (Dockerfile + E2E prepare step).
+# Never check it in.
+src/SapAssistant.Api/wwwroot/
 *.user
 *.suo
 *.userosscache

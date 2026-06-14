@@ -45,3 +45,43 @@ jobs:
           cache-dependency-path: src/SapAssistant.Web/package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm run build
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: tests/e2e/package-lock.json
+      - name: Restore + publish API (Release)
+        run: |
+          dotnet restore SapAssistant.sln
+          dotnet build src/SapAssistant.Api/SapAssistant.Api.csproj --no-restore --configuration Release
+      - name: Install E2E deps
+        working-directory: tests/e2e
+        run: npm ci --no-audit --no-fund
+      - name: Install Playwright browsers
+        working-directory: tests/e2e
+        run: npm run install:browsers:ci
+      - name: Build SPA + copy to API wwwroot
+        working-directory: tests/e2e
+        run: npm run prepare:all
+      - name: Run Playwright
+        working-directory: tests/e2e
+        run: npm test
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            tests/e2e/playwright-report
+            tests/e2e/test-results
+          if-no-files-found: ignore
+          retention-days: 7

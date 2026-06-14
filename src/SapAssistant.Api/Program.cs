@@ -52,6 +52,13 @@ app.MapAccountEndpoints(builder.Configuration, app.Environment);
 app.MapContestEndpoints();
 app.MapChatEndpoints();
 
+var authDisabled = builder.Configuration.GetValue<bool>("Auth:Disable")
+                   || app.Environment.EnvironmentName == "Testing";
+if (authDisabled)
+{
+    app.MapTestAuthEndpoints();
+}
+
 // SPA fallback: any non-API GET that doesn't match a file falls through to index.html
 // so React Router handles deep links like /contest, /chat, etc.
 if (!app.Environment.IsDevelopment())

@@ -1,0 +1,21 @@
+{
+  "name": "sap-assistant-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "description": "End-to-end browser tests for sap-assistant. Auth is bypassed via the test-only /api/test/signin endpoint (only registered when Auth:Disable=true).",
+  "type": "module",
+  "scripts": {
+    "prepare:spa": "npm --prefix ../../src/SapAssistant.Web ci --silent --no-audit --no-fund && npm --prefix ../../src/SapAssistant.Web run build",
+    "prepare:wwwroot": "node ./scripts/copy-spa-to-wwwroot.mjs",
+    "prepare:all": "npm run prepare:spa && npm run prepare:wwwroot",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "install:browsers": "playwright install chromium",
+    "install:browsers:ci": "playwright install --with-deps chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.10.0"
+  }
+}
