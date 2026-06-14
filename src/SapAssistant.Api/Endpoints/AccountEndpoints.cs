@@ -12,9 +12,17 @@ public static class AccountEndpoints
     {
         var frontendBaseUrl = cfg["FrontendBaseUrl"] ?? "/";
 
-        app.MapGet("/signin", ([FromQuery] string? returnUrl, HttpContext http) =>
+        app.MapGet("/signin", ([FromQuery] string? returnUrl, HttpContext http, ILoggerFactory loggerFactory) =>
         {
+            var logger = loggerFactory.CreateLogger("SapAuth.Signin");
             var safeReturnUrl = SafeReturnUrl(returnUrl, frontendBaseUrl);
+
+            var incomingCookies = string.Join(",", http.Request.Cookies.Keys);
+            logger.LogInformation(
+                "/signin entered. IsAuthenticated={Auth} ReturnUrl={Ret} IncomingCookies=[{Cookies}]",
+                http.User.Identity?.IsAuthenticated == true,
+                safeReturnUrl,
+                incomingCookies);
 
             // If the user already has a valid session, do NOT issue a fresh OIDC
             // challenge. Every challenge sets a new Correlation+Nonce cookie pair;
@@ -23,9 +31,11 @@ public static class AccountEndpoints
             // flow needs. Just send the user to their destination.
             if (http.User.Identity?.IsAuthenticated == true)
             {
+                logger.LogInformation("/signin short-circuit: already authenticated, redirecting to {Ret}", safeReturnUrl);
                 return Results.Redirect(safeReturnUrl);
             }
 
+            logger.LogInformation("/signin issuing OIDC challenge with RedirectUri={Ret}", safeReturnUrl);
             return Results.Challenge(
                 new AuthenticationProperties { RedirectUri = safeReturnUrl },
                 [OpenIdConnectDefaults.AuthenticationScheme]);
