@@ -61,7 +61,13 @@ if (authDisabled)
 
 // SPA fallback: any non-API GET that doesn't match a file falls through to index.html
 // so React Router handles deep links like /contest, /chat, etc.
-if (!app.Environment.IsDevelopment())
+//
+// Register whenever the SPA is served from this origin (i.e. wwwroot/index.html
+// exists). That covers prod AND dev's run-local-real-auth.ps1 launcher
+// (Development env + single-origin). When Aspire/Vite is hosting the SPA on a
+// different port, wwwroot/index.html is absent, so this is a no-op.
+var wwwrootIndex = Path.Combine(app.Environment.WebRootPath ?? "", "index.html");
+if (File.Exists(wwwrootIndex))
 {
     app.MapFallbackToFile("index.html");
 }
