@@ -9,6 +9,8 @@ causes, and generate executive briefings.
 - **Repo:** <https://github.com/naikaakash/procurement-copilot>
 - **Container registry:** `ghcr.io/naikaakash/procurement-copilot`
 - **Latest release:** see [CHANGELOG.md](CHANGELOG.md)
+- **Resuming work?** Start at [docs/STATUS.md](docs/STATUS.md) — current
+  deployment state, open work, gotchas.
 
 ---
 
