@@ -46,66 +46,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
       clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
       issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
-      // We've registered the redirect URI as both web AND spa on the Entra
-      // app (required to get past MSA's login.live.com authorize check).
-      // SPA-registered URIs are treated as public clients by MS, so the token
-      // request must NOT include `client_secret` — force PKCE-only auth.
+      // The redirect URI is registered as `publicClient` (Mobile and desktop
+      // / Native client-type) on the Entra app — NOT `web` and NOT `spa`.
+      // SPA platform requires CORS/Origin header on the token request which
+      // Auth.js's server-side fetch can't supply (AADSTS90023). Native is the
+      // right platform for a server-rendered Next.js app that needs MSA
+      // support on a multi-tenant app. Native = PKCE without client secret,
+      // so the token request must NOT include `client_secret`.
       client: { token_endpoint_auth_method: "none" },
-      // Auth.js v5 beta throws `OAuthCallbackError: invalid_request` and
-      // SILENTLY DROPS the cause/`error_description` from Microsoft (passes
-      // the cause object as Error options, but the options reader only
-      // honours `{cause: ...}`). Intercept the token response here so we
-      // can log MS's full error JSON (error_description / trace_id /
-      // error_uri / timestamp) to container logs.
-      token: {
-        conform: async (response: Response) => {
-          try {
-            const cloned = response.clone();
-            const text = await cloned.text();
-            const status = response.status;
-            console.log(
-              "[auth][token-response]",
-              JSON.stringify({ status, body: text.slice(0, 4000) }),
-            );
-          } catch (e) {
-            console.error("[auth][token-response-log-failed]", e);
-          }
-          return response;
-        },
-      },
     }),
   ],
   session: { strategy: "jwt" },
   trustHost: true,
-  debug: true,
-  logger: {
-    error(error) {
-      // Auth.js v5's default logger swallows the `cause` field — which is
-      // exactly where Microsoft puts `error_description` / `error_uri` /
-      // `trace_id`. Dump them explicitly so we can diagnose token-endpoint
-      // failures from container logs.
-      const anyErr = error as unknown as { message?: string; cause?: unknown; stack?: string };
-      console.error(
-        "[auth][error-detail]",
-        JSON.stringify(
-          {
-            name: error?.name,
-            message: anyErr?.message,
-            cause: anyErr?.cause,
-          },
-          null,
-          2,
-        ),
-      );
-      if (anyErr?.stack) console.error("[auth][error-stack]", anyErr.stack);
-    },
-    warn(code) {
-      console.warn("[auth][warn]", code);
-    },
-    debug(code, metadata) {
-      console.log("[auth][debug]", code, metadata ? JSON.stringify(metadata) : "");
-    },
-  },
   callbacks: {
     async jwt({ token, profile }) {
       if (profile) {
