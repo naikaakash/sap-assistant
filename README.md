@@ -24,6 +24,11 @@ Required env vars (all sourced from KV at runtime):
 | `AUTH_MICROSOFT_ENTRA_ID_SECRET` | `OAuth-Microsoft-ClientSecret` |
 | `AUTH_MICROSOFT_ENTRA_ID_ISSUER` | _hardcoded_ `https://login.microsoftonline.com/common/v2.0` |
 | `AUTH_URL` | _derived from Container App FQDN_ |
+| `AUTH_ALLOWED_EMAILS` | _Bicep param `authAllowedEmails`_ — comma-separated email/UPN allowlist. Empty = open. Default seeds the owner's account. Add teammates by re-running the deploy with `--parameters authAllowedEmails="a@x,b@y"`. |
+
+### Entra app registration
+
+The Entra app (`baacc761-0b8e-4881-832c-630c2365f532`, `signInAudience=AzureADandPersonalMicrosoftAccount`) is configured as a **Native** ("Mobile and desktop") platform — the callback URI is registered under `publicClient.redirectUris` (NOT `web` and NOT `spa`). Auth.js then uses PKCE without a client_secret (`client.token_endpoint_auth_method: "none"`). This is the only combination that works for MSA users on a converged app from a server-rendered Next.js app: SPA fails the token request with AADSTS90023 because Node's fetch can't supply a CORS `Origin` header.
 
 ## Local development
 

@@ -36,6 +36,9 @@ param logAnalyticsDailyCapGb int = 1
 @description('Entra ID tenant authority for the issuer URL. Use "common" for multi-tenant/MSA apps, or a specific tenant GUID for single-tenant apps. Default matches the existing Entra app (signInAudience=AzureADandPersonalMicrosoftAccount).')
 param entraTenantId string = 'common'
 
+@description('Comma-separated allowlist of emails / UPNs permitted to sign in. Checked in Auth.js `signIn` callback against profile.email, profile.preferred_username, and user.email (case-insensitive). Empty = open (NOT recommended in prod).')
+param authAllowedEmails string = 'aakash_a_naik@yahoo.com'
+
 // -----------------------------------------------------------------------------
 // Naming
 // -----------------------------------------------------------------------------
@@ -162,6 +165,7 @@ resource app 'Microsoft.App/containerApps@2024-10-02-preview' = {
             { name: 'AUTH_SECRET',                    secretRef: 'auth-secret' }
             { name: 'AUTH_MICROSOFT_ENTRA_ID_ID',     secretRef: 'entra-client-id' }
             { name: 'AUTH_MICROSOFT_ENTRA_ID_SECRET', secretRef: 'entra-client-secret' }
+            { name: 'AUTH_ALLOWED_EMAILS',            value: authAllowedEmails }
             { name: 'AZURE_CLIENT_ID',                value: uami.properties.clientId }
             { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appi.properties.ConnectionString }
             { name: 'NEXT_TELEMETRY_DISABLED',        value: '1' }

@@ -59,6 +59,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   trustHost: true,
   callbacks: {
+    /**
+     * Allowlist gate. Only users whose email/upn appears in
+     * `AUTH_ALLOWED_EMAILS` (comma-separated, case-insensitive) may sign in.
+     * If the env var is missing or empty, sign-in is OPEN (useful for local
+     * dev). In production, always set the env var.
+     *
+     * Matched against (in order):
+     *   1. profile.email          — set by Entra when `email` scope granted
+     *   2. profile.preferred_username — Entra's UPN-ish claim, populated for MSA too
+     *   3. user.email             — Auth.js's normalized email
+     */
+    async signIn({ user, profile }) {
+      const raw = process.env.AUTH_ALLOWED_EMAILS?.trim();
+      if (!raw) return true; // open mode — only intended for local dev
+
+      const allow = new Set(
+        raw
+          .split(",")
+          .map((s) => s.trim().toLowerCase())
+          .filter(Boolean),
+      );
+
+      const candidates = [
+        (profile as { email?: string } | undefined)?.email,
+        (profile as { preferred_username?: string } | undefined)?.preferred_username,
+        user?.email,
+      ]
+        .filter((v): v is string => typeof v === "string" && v.length > 0)
+        .map((v) => v.toLowerCase());
+
+      const ok = candidates.some((c) => allow.has(c));
+      if (!ok) {
+        console.warn(
+          "[auth][signIn-denied]",
+          JSON.stringify({ tried: candidates, allowedCount: allow.size }),
+        );
+      }
+      return ok;
+    },
     async jwt({ token, profile }) {
       if (profile) {
         token.oid = (profile as { oid?: string }).oid;
