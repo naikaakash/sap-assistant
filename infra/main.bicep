@@ -39,6 +39,22 @@ param entraTenantId string = 'common'
 @description('Comma-separated allowlist of emails / UPNs permitted to sign in. Checked in Auth.js `signIn` callback against profile.email, profile.preferred_username, and user.email (case-insensitive). Empty = open (NOT recommended in prod).')
 param authAllowedEmails string = 'aakash_a_naik@yahoo.com'
 
+@description('Data source for the procurement app. "sql" reads/writes Azure SQL; "csv" falls back to bundled CSV + local JSON files.')
+@allowed([ 'sql', 'csv' ])
+param dataSource string = 'sql'
+
+@description('Azure SQL logical server name (no .database.windows.net suffix).')
+param sqlServerName string = 'sapassistant-sql-2606142214'
+
+@description('Azure SQL database name.')
+param sqlDatabaseName string = 'procurement'
+
+@description('Azure OpenAI resource name (subdomain of openai.azure.com).')
+param aoaiResource string = 'sapassistant-aoai'
+
+@description('Azure OpenAI deployment name (per-model endpoint).')
+param aoaiDeployment string = 'gpt-41-nano'
+
 // -----------------------------------------------------------------------------
 // Naming
 // -----------------------------------------------------------------------------
@@ -144,6 +160,16 @@ resource app 'Microsoft.App/containerApps@2024-10-02-preview' = {
           keyVaultUrl: '${kv.properties.vaultUri}secrets/OAuth-Microsoft-ClientSecret'
           identity: uami.id
         }
+        {
+          name: 'aoai-key'
+          keyVaultUrl: '${kv.properties.vaultUri}secrets/AOAI-Key'
+          identity: uami.id
+        }
+        {
+          name: 'sql-conn'
+          keyVaultUrl: '${kv.properties.vaultUri}secrets/SQL-ConnectionString'
+          identity: uami.id
+        }
       ]
     }
     template: {
@@ -169,6 +195,15 @@ resource app 'Microsoft.App/containerApps@2024-10-02-preview' = {
             { name: 'AZURE_CLIENT_ID',                value: uami.properties.clientId }
             { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: appi.properties.ConnectionString }
             { name: 'NEXT_TELEMETRY_DISABLED',        value: '1' }
+            // ---- Data layer (Phase 3) ----
+            { name: 'DATA_SOURCE',                    value: dataSource }
+            { name: 'SQL_SERVER',                     value: '${sqlServerName}.database.windows.net' }
+            { name: 'SQL_DATABASE',                   value: sqlDatabaseName }
+            { name: 'SQL_CONNECTION_STRING',          secretRef: 'sql-conn' }
+            // ---- Azure OpenAI ----
+            { name: 'AZURE_OPENAI_RESOURCE',          value: aoaiResource }
+            { name: 'AZURE_OPENAI_DEPLOYMENT',        value: aoaiDeployment }
+            { name: 'AZURE_OPENAI_KEY',               secretRef: 'aoai-key' }
           ]
         }
       ]

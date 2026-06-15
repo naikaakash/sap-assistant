@@ -378,6 +378,7 @@ h1, h2, h3, h4, .title-font {
   height: 100vh;
   position: sticky;
   top: 0;
+  align-self: flex-start;
   z-index: 50;
   flex-shrink: 0;
   transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
