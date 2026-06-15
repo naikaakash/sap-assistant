@@ -1,6 +1,8 @@
 import csv from 'csvtojson';
 import path from 'path';
 import fs from 'fs';
+import { isSqlMode } from './sqlClient';
+import { loadTableRows } from './sqlTableRows';
 
 const DATA_ROOT = path.join(process.cwd(), 'procurement_data_sample');
 
@@ -55,6 +57,28 @@ export function padItemNumber(itemNum: string): string {
 }
 
 export async function readCsv(filename: string): Promise<any[]> {
+  if (isSqlMode()) {
+    try {
+      const rawData = await loadTableRows(filename);
+      updateTodayDate();
+      const diff = getDayDifference();
+      return rawData.map((row: any) => {
+        const shiftedRow: any = {};
+        for (const key in row) {
+          const val = row[key];
+          if (typeof val === 'string' && dateRegex.test(val)) {
+            shiftedRow[key] = shiftDateString(val, diff);
+          } else {
+            shiftedRow[key] = val;
+          }
+        }
+        return shiftedRow;
+      });
+    } catch (e) {
+      console.error(`[csvDataService] SQL read failed for ${filename}, falling back to CSV:`, e);
+      // Fall through to CSV path below
+    }
+  }
   const filePath = path.join(DATA_ROOT, filename);
   try {
     const stats = fs.statSync(filePath);

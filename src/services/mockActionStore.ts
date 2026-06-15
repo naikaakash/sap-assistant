@@ -51,12 +51,15 @@ import {
   ActionNotFoundError,
   ActionValidationError,
 } from '@/src/types/procurementActions';
+import { isSqlMode } from '@/src/services/data/sqlClient';
+import { pullRecordsFromSql, pushRecordsToSql } from '@/src/services/data/sqlBlobStore';
 
 // ---------------------------------------------------------------------------
 // File path
 // ---------------------------------------------------------------------------
 
 const STORE_FILE = path.join(process.cwd(), 'data', 'app-actions.json');
+const SQL_TABLE = 'app_actions';
 
 // ---------------------------------------------------------------------------
 // In-memory store (module-level singleton)
@@ -98,9 +101,39 @@ function persistToFile(): void {
   try {
     const records = Array.from(_store.values());
     fs.writeFileSync(STORE_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    if (isSqlMode()) {
+      // Fire-and-forget mirror to SQL. Errors are logged but never thrown so
+      // sync callers stay sync. The next boot will repair drift either way.
+      pushRecordsToSql<ProcurementAction>(SQL_TABLE, records, 'actionId').catch((err) => {
+        console.error('[mockActionStore] SQL mirror push failed:', err);
+      });
+    }
   } catch (err) {
     // Log but don't throw — in-memory store still works even if file write fails
     console.error('[mockActionStore] Failed to persist app-actions.json:', err);
+  }
+}
+
+/**
+ * Boot-time hook. When DATA_SOURCE=sql, pulls the canonical record set from
+ * SQL and writes it to the local JSON file BEFORE any sync init() runs. This
+ * primes the store so subsequent sync reads see the SQL data.
+ *
+ * Called from instrumentation.ts. Safe to call multiple times.
+ */
+export async function bootFromSql(): Promise<number> {
+  if (!isSqlMode()) return 0;
+  try {
+    const records = await pullRecordsFromSql<ProcurementAction>(SQL_TABLE);
+    ensureDataDir();
+    fs.writeFileSync(STORE_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    // Force any subsequent init() to reload from the freshly-pulled file.
+    _initialized = false;
+    _store = new Map();
+    return records.length;
+  } catch (err) {
+    console.error('[mockActionStore] Boot from SQL failed; will use local file:', err);
+    return -1;
   }
 }
 

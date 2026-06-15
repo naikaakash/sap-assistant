@@ -35,6 +35,8 @@ import {
   SupplierCommunicationValidationError,
   SupplierCommunicationStateError,
 } from '@/src/types/supplierCommunications';
+import { isSqlMode } from '@/src/services/data/sqlClient';
+import { pullRecordsFromSql, pushRecordsToSql } from '@/src/services/data/sqlBlobStore';
 
 // ---------------------------------------------------------------------------
 // File paths
@@ -42,6 +44,8 @@ import {
 
 const REMINDERS_FILE = path.join(process.cwd(), 'data', 'app-supplier-reminders.json');
 const RESPONSES_FILE = path.join(process.cwd(), 'data', 'app-supplier-responses.json');
+const REMINDERS_SQL_TABLE = 'app_supplier_reminders';
+const RESPONSES_SQL_TABLE = 'app_supplier_responses';
 
 // ---------------------------------------------------------------------------
 // In-memory stores (module-level singletons)
@@ -84,6 +88,11 @@ function persistReminders(): void {
   try {
     const records = Array.from(_remindersStore.values());
     fs.writeFileSync(REMINDERS_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    if (isSqlMode()) {
+      pushRecordsToSql<SupplierReminder>(REMINDERS_SQL_TABLE, records, 'reminderId').catch((err) => {
+        console.error('[mockSupplierCommunicationStore] SQL mirror push failed (reminders):', err);
+      });
+    }
   } catch (err) {
     console.error('[mockSupplierCommunicationStore] Failed to persist app-supplier-reminders.json:', err);
   }
@@ -110,9 +119,46 @@ function persistResponses(): void {
   try {
     const records = Array.from(_responsesStore.values());
     fs.writeFileSync(RESPONSES_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    if (isSqlMode()) {
+      pushRecordsToSql<SupplierResponse>(RESPONSES_SQL_TABLE, records, 'responseId').catch((err) => {
+        console.error('[mockSupplierCommunicationStore] SQL mirror push failed (responses):', err);
+      });
+    }
   } catch (err) {
     console.error('[mockSupplierCommunicationStore] Failed to persist app-supplier-responses.json:', err);
   }
+}
+
+/**
+ * Boot-time hook. When DATA_SOURCE=sql, pulls both reminder and response
+ * record sets from SQL and writes them to local JSON files BEFORE any sync
+ * init() runs. Called from instrumentation.ts.
+ */
+export async function bootFromSql(): Promise<{ reminders: number; responses: number }> {
+  if (!isSqlMode()) return { reminders: 0, responses: 0 };
+  let reminderCount = -1;
+  let responseCount = -1;
+  try {
+    const reminders = await pullRecordsFromSql<SupplierReminder>(REMINDERS_SQL_TABLE);
+    ensureDataDir(REMINDERS_FILE);
+    fs.writeFileSync(REMINDERS_FILE, JSON.stringify(reminders, null, 2), 'utf-8');
+    _remindersInitialized = false;
+    _remindersStore = new Map();
+    reminderCount = reminders.length;
+  } catch (err) {
+    console.error('[mockSupplierCommunicationStore] Boot reminders failed:', err);
+  }
+  try {
+    const responses = await pullRecordsFromSql<SupplierResponse>(RESPONSES_SQL_TABLE);
+    ensureDataDir(RESPONSES_FILE);
+    fs.writeFileSync(RESPONSES_FILE, JSON.stringify(responses, null, 2), 'utf-8');
+    _responsesInitialized = false;
+    _responsesStore = new Map();
+    responseCount = responses.length;
+  } catch (err) {
+    console.error('[mockSupplierCommunicationStore] Boot responses failed:', err);
+  }
+  return { reminders: reminderCount, responses: responseCount };
 }
 
 function initReminders(): void {

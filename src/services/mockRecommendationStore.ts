@@ -23,12 +23,15 @@ import {
   RecommendationNotFoundError,
   RecommendationValidationError,
 } from '@/src/types/procurementRecommendations';
+import { isSqlMode } from '@/src/services/data/sqlClient';
+import { pullRecordsFromSql, pushRecordsToSql } from '@/src/services/data/sqlBlobStore';
 
 // ---------------------------------------------------------------------------
 // File path
 // ---------------------------------------------------------------------------
 
 const STORE_FILE = path.join(process.cwd(), 'data', 'app-recommendations.json');
+const SQL_TABLE = 'app_recommendations';
 
 // ---------------------------------------------------------------------------
 // In-memory store (module-level singleton)
@@ -70,8 +73,31 @@ function persistToFile(): void {
   try {
     const records = Array.from(_store.values());
     fs.writeFileSync(STORE_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    if (isSqlMode()) {
+      pushRecordsToSql<Recommendation>(SQL_TABLE, records, 'recommendationId').catch((err) => {
+        console.error('[mockRecommendationStore] SQL mirror push failed:', err);
+      });
+    }
   } catch (err) {
     console.error('[mockRecommendationStore] Failed to persist app-recommendations.json:', err);
+  }
+}
+
+/**
+ * Boot-time hook. See mockActionStore.bootFromSql for full contract.
+ */
+export async function bootFromSql(): Promise<number> {
+  if (!isSqlMode()) return 0;
+  try {
+    const records = await pullRecordsFromSql<Recommendation>(SQL_TABLE);
+    ensureDataDir();
+    fs.writeFileSync(STORE_FILE, JSON.stringify(records, null, 2), 'utf-8');
+    _initialized = false;
+    _store = new Map();
+    return records.length;
+  } catch (err) {
+    console.error('[mockRecommendationStore] Boot from SQL failed; will use local file:', err);
+    return -1;
   }
 }
 
