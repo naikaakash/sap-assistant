@@ -368,6 +368,47 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
   const [cumulativeTokens, setCumulativeTokens] = useState<{ totalTokens: number; totalCost: number; sessionCount: number } | null>(null);
   const [showDiagnostics, setShowDiagnostics] = useState(false);
 
+  // Collapsible left sidebar (Azure DevOps-style icon rail). Persisted to localStorage.
+  // Collapsed = 60px icon rail + hover-expand overlay. Expanded = pinned-open 260px.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const saved = window.localStorage.getItem('pc.sidebar.collapsed');
+      if (saved === '1') setSidebarCollapsed(true);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try { window.localStorage.setItem('pc.sidebar.collapsed', sidebarCollapsed ? '1' : '0'); } catch {}
+  }, [sidebarCollapsed]);
+
+  // Auth.js session for the user account button in the sidebar footer
+  const [session, setSession] = useState<{ user?: { name?: string | null; email?: string | null; image?: string | null } } | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/auth/session')
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (!cancelled) setSession(d && d.user ? d : null); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const close = () => setUserMenuOpen(false);
+    window.addEventListener('click', close);
+    return () => window.removeEventListener('click', close);
+  }, [userMenuOpen]);
+  const userName = session?.user?.name || session?.user?.email || 'Signed-out';
+  const userEmail = session?.user?.email || '';
+  const userInitials = (session?.user?.name || session?.user?.email || '?')
+    .split(/[\s@.]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map(s => s[0]?.toUpperCase() ?? '')
+    .join('') || '?';
+
   // Phase 3C: AI Supplier Intelligence state
   const [aiSupplierIntel, setAiSupplierIntel] = useState<any | null>(null);
   const [aiSupplierIntelLoading, setAiSupplierIntelLoading] = useState(false);
@@ -1934,7 +1975,8 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
       <div className="app-container">
         
         {/* LEFT SIDEBAR NAVIGATION - THE PRODUCT ROADMAP NAVIGATION PANEL */}
-        <aside className="sidebar">
+        <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+          <div className="sidebar-inner">
           <div className="sidebar-logo">
             <div style={{
               width: '28px',
@@ -1946,11 +1988,21 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
               justifyContent: 'center',
               fontWeight: 700,
               fontSize: '0.85rem',
-              color: '#fff'
+              color: '#fff',
+              flexShrink: 0,
             }}>
               A
             </div>
             <span className="sidebar-logo-text">Procurement Dashboard</span>
+            <button
+              type="button"
+              className="sidebar-toggle"
+              aria-label={sidebarCollapsed ? 'Pin navigation open' : 'Collapse navigation'}
+              title={sidebarCollapsed ? 'Pin navigation open' : 'Collapse navigation'}
+              onClick={() => setSidebarCollapsed(c => !c)}
+            >
+              {sidebarCollapsed ? '»' : '«'}
+            </button>
           </div>
 
           <nav className="sidebar-nav">
@@ -1959,6 +2011,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                 key={m.key}
                 data-testid={`sidebar-tab-${m.key}`}
                 className={`sidebar-item ${activeTab === m.key ? 'active' : ''}`}
+                title={m.label}
                 onClick={() => {
                   resetFiltersAndDrawers();
                   setActiveTab(m.key as any);
@@ -1969,19 +2022,21 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                 }}
               >
                 <span className="sidebar-item-label">
-                  <span>{m.icon}</span> {m.label}
+                  <span className="sidebar-item-icon">{m.icon}</span>
+                  <span className="sidebar-item-text">{m.label}</span>
                 </span>
-                {activeTab === m.key && <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', display: 'inline-block', flexShrink: 0 }} />}
+                {activeTab === m.key && <span className="sidebar-item-active-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-primary)', display: 'inline-block', flexShrink: 0 }} />}
               </div>
             ))}
           </nav>
 
-          <div style={{ borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+          <div className="sidebar-footer" style={{ borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
 
             {/* System Diagnostics Collapsible Panel */}
             <div style={{ overflow: 'hidden' }}>
               <button
                 onClick={() => setShowDiagnostics(d => !d)}
+                title="System Diagnostics"
                 style={{
                   width: '100%',
                   background: 'transparent',
@@ -2001,13 +2056,13 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
               >
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                   <span>⚙️</span>
-                  <span style={{ fontWeight: 600, letterSpacing: '0.03em' }}>System Diagnostics</span>
+                  <span className="sidebar-item-text" style={{ fontWeight: 600, letterSpacing: '0.03em' }}>System Diagnostics</span>
                 </span>
-                <span style={{ fontSize: '0.6rem', transition: 'transform 0.2s', display: 'inline-block', transform: showDiagnostics ? 'rotate(180deg)' : 'none' }}>▾</span>
+                <span className="sidebar-item-text" style={{ fontSize: '0.6rem', transition: 'transform 0.2s', display: 'inline-block', transform: showDiagnostics ? 'rotate(180deg)' : 'none' }}>▾</span>
               </button>
 
               {showDiagnostics && (
-                <div style={{ padding: '0 1rem 0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.65rem', animation: 'fadeIn 0.2s ease' }}>
+                <div className="sidebar-item-text" style={{ padding: '0 1rem 0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.65rem', animation: 'fadeIn 0.2s ease' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.3rem 0.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.25rem', border: '1px solid rgba(255,255,255,0.04)' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Total Tokens Used</span>
                     <span style={{ fontWeight: 700, color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
@@ -2036,14 +2091,75 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
               )}
             </div>
 
+            {/* User account section */}
+            <div className="sidebar-user" style={{ borderTop: '1px solid var(--border-color)', position: 'relative' }}>
+              <button
+                type="button"
+                className="sidebar-user-button"
+                aria-haspopup="menu"
+                aria-expanded={userMenuOpen}
+                title={userName + (userEmail && userEmail !== userName ? ` (${userEmail})` : '')}
+                onClick={(e) => { e.stopPropagation(); setUserMenuOpen(o => !o); }}
+              >
+                <span className="sidebar-user-avatar" aria-hidden="true">{userInitials}</span>
+                <span className="sidebar-item-text sidebar-user-meta">
+                  <span className="sidebar-user-name">{userName}</span>
+                  {userEmail && userEmail !== userName && (
+                    <span className="sidebar-user-email">{userEmail}</span>
+                  )}
+                </span>
+                <span className="sidebar-item-text sidebar-user-caret" aria-hidden="true">▾</span>
+              </button>
+
+              {userMenuOpen && (
+                <div
+                  role="menu"
+                  className="sidebar-user-menu"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="sidebar-user-menu-header">
+                    <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.78rem' }}>{userName}</div>
+                    {userEmail && <div style={{ color: 'var(--text-muted)', fontSize: '0.68rem', marginTop: '2px' }}>{userEmail}</div>}
+                  </div>
+                  <a
+                    role="menuitem"
+                    href="https://account.microsoft.com/profile"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="sidebar-user-menu-item"
+                  >
+                    <span>👤</span> Microsoft account settings
+                  </a>
+                  {session ? (
+                    <a
+                      role="menuitem"
+                      href="/api/auth/signout"
+                      className="sidebar-user-menu-item sidebar-user-menu-signout"
+                    >
+                      <span>↪</span> Sign out
+                    </a>
+                  ) : (
+                    <a
+                      role="menuitem"
+                      href="/api/auth/signin"
+                      className="sidebar-user-menu-item"
+                    >
+                      <span>↪</span> Sign in
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Control Tower Sync Status */}
-            <div style={{ padding: '0.5rem 1rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', fontSize: '0.6875rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
-              <span>Control Tower Sync:</span>
+            <div className="sidebar-sync" style={{ padding: '0.5rem 1rem 0.75rem', display: 'flex', flexDirection: 'column', gap: '0.2rem', fontSize: '0.6875rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border-color)' }}>
+              <span className="sidebar-item-text">Control Tower Sync:</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22c55e' }}></div>
-                <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Today: {todayDate}</span>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#22c55e', flexShrink: 0 }}></div>
+                <span className="sidebar-item-text" style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Today: {todayDate}</span>
               </div>
             </div>
+          </div>
           </div>
         </aside>
 
@@ -3229,7 +3345,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.75rem', tableLayout: 'fixed' }}>
                         <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--bg-surface-elevated)', borderBottom: '1px solid var(--border-color)' }}>
                           <tr>
-                            <th style={{ padding: '0.75rem 0.5rem', width: '70px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, paddingLeft: '1rem' }}>Sev</th>
+                            <th style={{ padding: '0.75rem 0.5rem', width: '100px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, paddingLeft: '1rem' }}>Sev</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '90px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>Priority</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '85px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>PO Number</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '50px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>Item</th>
@@ -5032,7 +5148,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.75rem', tableLayout: 'fixed' }}>
                         <thead style={{ position: 'sticky', top: 0, zIndex: 10, background: 'var(--bg-surface-elevated)', borderBottom: '1px solid var(--border-color)' }}>
                           <tr>
-                            <th style={{ padding: '0.75rem 0.5rem', width: '70px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, paddingLeft: '1rem' }}>Sev</th>
+                            <th style={{ padding: '0.75rem 0.5rem', width: '100px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, paddingLeft: '1rem' }}>Sev</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '90px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>Priority</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '85px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>PO Number</th>
                             <th style={{ padding: '0.75rem 0.5rem', width: '50px', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>Item</th>

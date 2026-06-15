@@ -380,7 +380,269 @@ h1, h2, h3, h4, .title-font {
   top: 0;
   z-index: 50;
   flex-shrink: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Default (expanded): the inner wrapper is just a transparent shell */
+.sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: inherit;
+  overflow: hidden;
+}
+
+/* Pin/collapse toggle in the logo row */
+.sidebar-toggle {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.sidebar-toggle:hover {
+  background: rgba(0,0,0,0.04);
+  color: var(--text-primary);
+}
+
+/* ---- COLLAPSED RAIL MODE (Azure DevOps style) ---- */
+/* Outer reserves 60px in the flex layout; inner overlays on hover with full 260px. */
+.sidebar.collapsed {
+  width: 60px;
+}
+.sidebar.collapsed .sidebar-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 100vh;
+  z-index: 60;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  transition: width 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease;
+}
+.sidebar.collapsed:hover .sidebar-inner,
+.sidebar.collapsed:focus-within .sidebar-inner {
+  width: 260px;
+  box-shadow: 6px 0 24px rgba(0,0,0,0.10);
+}
+
+/* Hide text/secondary content in collapsed rail.
+   Use `display: none` (not visibility:hidden) so the elements don't reserve
+   layout width — otherwise the rail won't actually shrink. */
+.sidebar.collapsed .sidebar-logo-text,
+.sidebar.collapsed .sidebar-item-text,
+.sidebar.collapsed .sidebar-item-active-dot,
+.sidebar.collapsed .sidebar-toggle,
+.sidebar.collapsed .sidebar-sync {
+  display: none;
+}
+.sidebar.collapsed:hover .sidebar-logo-text,
+.sidebar.collapsed:focus-within .sidebar-logo-text {
+  display: inline;
+}
+.sidebar.collapsed:hover .sidebar-item-text,
+.sidebar.collapsed:focus-within .sidebar-item-text {
+  display: inline-flex;
+}
+.sidebar.collapsed:hover .sidebar-item-active-dot,
+.sidebar.collapsed:focus-within .sidebar-item-active-dot {
+  display: inline-block;
+}
+.sidebar.collapsed:hover .sidebar-toggle,
+.sidebar.collapsed:focus-within .sidebar-toggle {
+  display: flex;
+}
+.sidebar.collapsed:hover .sidebar-sync,
+.sidebar.collapsed:focus-within .sidebar-sync {
+  display: flex;
+}
+
+/* Also collapse the user-meta block (it's column-flex when shown) */
+.sidebar.collapsed .sidebar-user-meta,
+.sidebar.collapsed .sidebar-user-caret {
+  display: none;
+}
+.sidebar.collapsed:hover .sidebar-user-meta,
+.sidebar.collapsed:focus-within .sidebar-user-meta {
+  display: flex;
+}
+.sidebar.collapsed:hover .sidebar-user-caret,
+.sidebar.collapsed:focus-within .sidebar-user-caret {
+  display: inline;
+}
+
+/* Center the logo + nav item icons when collapsed (and not hovered) */
+.sidebar.collapsed .sidebar-logo {
+  justify-content: center;
+  padding: 1.25rem 0;
+}
+.sidebar.collapsed:hover .sidebar-logo,
+.sidebar.collapsed:focus-within .sidebar-logo {
+  justify-content: flex-start;
+  padding: 1.5rem 1.25rem;
+}
+
+.sidebar.collapsed .sidebar-item {
+  justify-content: center;
+  padding: 0.65rem 0;
+}
+.sidebar.collapsed:hover .sidebar-item,
+.sidebar.collapsed:focus-within .sidebar-item {
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+}
+
+.sidebar-item-icon {
+  font-size: 1rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.25rem;
+  text-align: center;
+}
+
+/* ---- User account button (sidebar footer) ---- */
+.sidebar-user-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  text-align: left;
+  outline: none;
+  transition: background 0.15s;
+}
+.sidebar-user-button:hover {
+  background: rgba(0,0,0,0.03);
+}
+.sidebar-user-avatar {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.sidebar-user-meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+  overflow: hidden;
+}
+.sidebar-user-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-email {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sidebar-user-caret {
+  color: var(--text-muted);
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+
+.sidebar.collapsed .sidebar-user-button {
+  justify-content: center;
+  padding: 0.65rem 0;
+}
+.sidebar.collapsed:hover .sidebar-user-button,
+.sidebar.collapsed:focus-within .sidebar-user-button {
+  justify-content: flex-start;
+  padding: 0.65rem 1rem;
+}
+
+.sidebar-user-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0.5rem;
+  right: 0.5rem;
+  z-index: 100;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 32px rgba(0,0,0,0.18);
+  padding: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.sidebar.collapsed .sidebar-user-menu {
+  left: 60px;
+  right: auto;
+  bottom: 0;
+  width: 240px;
+  margin-left: 6px;
+}
+.sidebar.collapsed:hover .sidebar-user-menu,
+.sidebar.collapsed:focus-within .sidebar-user-menu {
+  left: 0.5rem;
+  right: 0.5rem;
+  width: auto;
+  margin-left: 0;
+}
+.sidebar-user-menu-header {
+  padding: 0.5rem 0.65rem 0.55rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 0.2rem;
+}
+.sidebar-user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.3rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.sidebar-user-menu-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: var(--text-primary);
+}
+.sidebar-user-menu-signout {
+  color: #dc2626;
+}
+.sidebar-user-menu-signout:hover {
+  background: rgba(220, 38, 38, 0.06);
+  color: #b91c1c;
 }
 
 .sidebar-logo {
