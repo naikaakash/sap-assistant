@@ -25,7 +25,23 @@ declare module "next-auth" {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [MicrosoftEntraID],
+  providers: [
+    MicrosoftEntraID({
+      // Public-client / PKCE-only flow. The redirect URI for this app is
+      // registered as a SPA redirect (required to make personal Microsoft
+      // accounts work via login.live.com); SPA registrations force public-
+      // client semantics, so we must NOT send the client_secret to the token
+      // endpoint. Auth.js still lets us optionally provide one for the
+      // confidential branch, but we override `token_endpoint_auth_method` to
+      // `none` so PKCE is the only proof of possession we send.
+      clientId: process.env.AUTH_MICROSOFT_ENTRA_ID_ID,
+      clientSecret: process.env.AUTH_MICROSOFT_ENTRA_ID_SECRET,
+      issuer: process.env.AUTH_MICROSOFT_ENTRA_ID_ISSUER,
+      client: {
+        token_endpoint_auth_method: "none",
+      },
+    }),
+  ],
   session: { strategy: "jwt" },
   trustHost: true,
   debug: true,
