@@ -86,9 +86,29 @@ jobs:
               -n "sapassistant-app" \
               --query "properties.template.containers[0].image" -o tsv)
             expected="${{ steps.image.outputs.value }}"
+            echo "Pre-deploy image:  $expected"
             echo "Post-deploy image: $after"
-            if [ "$after" != "$expected" ]; then
-              echo "✗ Image drift detected. Expected $expected, got $after."
+
+            # Hard fail: prod regressed to the Bicep default placeholder.
+            if echo "$after" | grep -q 'k8se/quickstart'; then
+              echo "✗ Production image regressed to the k8se quickstart placeholder."
               exit 1
             fi
-            echo "✓ Production image preserved across infra deploy."
+
+            # Hard fail: the image is empty or otherwise not our app image.
+            case "$after" in
+              ghcr.io/naikaakash/procurement-copilot:*) ;;
+              *)
+                echo "✗ Production image is not the expected ghcr.io/naikaakash/procurement-copilot:* — got '$after'."
+                exit 1
+                ;;
+            esac
+
+            # Soft warning: image changed since we read it. This is normal
+            # when deploy.yml runs in parallel and rolls forward to a newer
+            # tag mid-flight; not a failure.
+            if [ "$after" != "$expected" ]; then
+              echo "⚠ Image differs from pre-deploy snapshot. Likely a parallel deploy.yml run rolled prod forward. Accepting."
+            else
+              echo "✓ Production image preserved across infra deploy."
+            fi
