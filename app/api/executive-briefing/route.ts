@@ -84,7 +84,7 @@ Return this JSON structure:
       const resource = process.env.AZURE_OPENAI_RESOURCE;
       const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
       const response = await fetch(
-        `https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2023-05-15`,
+        `https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': azureKey },
@@ -94,15 +94,17 @@ Return this JSON structure:
               { role: 'user', content: prompt }
             ],
             temperature: 0.2,
-            max_tokens: 512
+            max_tokens: 512,
+            response_format: { type: 'json_object' }
           })
         }
       );
-      if (!response.ok) throw new Error(`Azure error ${response.status}`);
+      if (!response.ok) throw new Error(`Azure error ${response.status}: ${await response.text()}`);
       const json = await response.json();
       tokensUsed = json.usage?.total_tokens || 0;
       const rawText = json.choices?.[0]?.message?.content || '{}';
-      const cleaned = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+      const stripped = rawText.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+      const cleaned = stripped.startsWith('{') ? stripped : (stripped.match(/\{[\s\S]*\}/)?.[0] || stripped);
       briefing = JSON.parse(cleaned);
 
     } else {

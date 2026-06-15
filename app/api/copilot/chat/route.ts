@@ -234,7 +234,7 @@ Instructions & Guardrails:
         }))
       ];
 
-      const response = await fetch(`https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2023-05-15`, {
+      const response = await fetch(`https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

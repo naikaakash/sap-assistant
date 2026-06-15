@@ -117,7 +117,7 @@ Based strictly on the data above, produce a JSON object with EXACTLY this struct
       const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
 
       const response = await fetch(
-        `https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2023-05-15`,
+        `https://${resource}.openai.azure.com/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'api-key': azureKey },
@@ -127,7 +127,8 @@ Based strictly on the data above, produce a JSON object with EXACTLY this struct
               { role: 'user', content: diagnosticPrompt }
             ],
             temperature: 0.1,
-            max_tokens: 512
+            max_tokens: 512,
+            response_format: { type: 'json_object' }
           })
         }
       );
@@ -142,7 +143,8 @@ Based strictly on the data above, produce a JSON object with EXACTLY this struct
       const rawText = resJson.choices?.[0]?.message?.content || '{}';
 
       try {
-        const cleaned = rawText.replace(/^```json\s*/i, '').replace(/```\s*$/i, '').trim();
+        const stripped = rawText.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+        const cleaned = stripped.startsWith('{') ? stripped : (stripped.match(/\{[\s\S]*\}/)?.[0] || stripped);
         const parsed = JSON.parse(cleaned);
         analysisResult = {
           exception_id: parsed.exception_id || exceptionId,
@@ -153,8 +155,8 @@ Based strictly on the data above, produce a JSON object with EXACTLY this struct
           recommended_action: parsed.recommended_action || 'Escalate to supplier management team.',
           similar_past_exceptions: ctx.similar_past_exceptions
         };
-      } catch {
-        throw new Error('Failed to parse Azure OpenAI JSON response.');
+      } catch (e: any) {
+        throw new Error(`Failed to parse Azure OpenAI JSON response: ${e.message}. Raw: ${rawText.slice(0, 200)}`);
       }
 
     } else {
