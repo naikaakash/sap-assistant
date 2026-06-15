@@ -11,6 +11,20 @@ The format roughly follows [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 ## [Unreleased]
 
+### Fixed
+- **`infra.yml` workflow was wiping production on every Bicep-only push.**
+  The Bicep template defaults `containerImage` to the `k8se/quickstart`
+  placeholder, and the `infra` workflow was running `az deployment group
+  create` with `main.parameters.json` only — no `containerImage`
+  override — so every infra-only deploy reverted the live Container App
+  to the quickstart placeholder. The `deploy` workflow always passed
+  `--parameters containerImage=...` so the regression only showed up on
+  pushes that touched `infra/**` but not `app/**`/`src/**`/etc. Fix:
+  `infra.yml` now reads the current image off the live Container App
+  before deploying, passes it through to Bicep, refuses to deploy if
+  the current image is the quickstart placeholder (i.e. already broken),
+  and verifies the image is preserved post-deploy.
+
 ### Changed
 - Auth allowlist now includes `naikaalok@gmail.com` in addition to
   `aakash_a_naik@yahoo.com`. Set via `authAllowedEmails` Bicep param.

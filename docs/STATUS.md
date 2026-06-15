@@ -114,6 +114,12 @@ sidebar must stay pinned while the main panel scrolls.
 - **Don't `az containerapp update --set-env-vars` ever again.** Use the
   Bicep param + `az deployment group create`, or edit `infra/main.bicep`
   and push to trigger the CI deploy.
+- **`infra.yml` must always pass `containerImage`.** The Bicep default is
+  the k8se quickstart placeholder; deploying without an override wipes
+  prod. The workflow now reads the current image off the live Container
+  App and passes it through automatically, but if you ever invoke `az
+  deployment group create` by hand, always include `--parameters
+  containerImage=ghcr.io/.../<tag>`.
 
 ## Useful commands
 

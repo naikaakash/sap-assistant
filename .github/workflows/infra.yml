@@ -34,6 +34,28 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Resolve current production container image
+        # The Bicep template defaults `containerImage` to the k8se quickstart
+        # placeholder. If we run `az deployment group create` without an
+        # explicit override, Bicep wipes prod and replaces it with the
+        # placeholder. To make Bicep-only changes safe, read the currently
+        # deployed image off the live Container App and pass it through.
+        id: image
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            current=$(az containerapp show \
+              -g "$AZURE_RG" \
+              -n "sapassistant-app" \
+              --query "properties.template.containers[0].image" -o tsv)
+            if [ -z "$current" ] || echo "$current" | grep -q 'quickstart'; then
+              echo "✗ Refusing to deploy: current image is missing or the quickstart placeholder ($current)."
+              echo "  This usually means the previous deploy was broken. Run the deploy workflow first to publish a real image."
+              exit 1
+            fi
+            echo "Current image: $current"
+            echo "value=$current" >> "$GITHUB_OUTPUT"
+
       - name: Bicep what-if
         uses: azure/cli@v2
         with:
@@ -41,7 +63,8 @@ jobs:
             az deployment group what-if \
               --resource-group "$AZURE_RG" \
               --template-file infra/main.bicep \
-              --parameters infra/main.parameters.json
+              --parameters infra/main.parameters.json \
+              --parameters containerImage="${{ steps.image.outputs.value }}"
 
       - name: Deploy
         uses: azure/cli@v2
@@ -51,4 +74,21 @@ jobs:
               --resource-group "$AZURE_RG" \
               --template-file infra/main.bicep \
               --parameters infra/main.parameters.json \
+              --parameters containerImage="${{ steps.image.outputs.value }}" \
               --query "properties.outputs"
+
+      - name: Verify production image was preserved
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            after=$(az containerapp show \
+              -g "$AZURE_RG" \
+              -n "sapassistant-app" \
+              --query "properties.template.containers[0].image" -o tsv)
+            expected="${{ steps.image.outputs.value }}"
+            echo "Post-deploy image: $after"
+            if [ "$after" != "$expected" ]; then
+              echo "✗ Image drift detected. Expected $expected, got $after."
+              exit 1
+            fi
+            echo "✓ Production image preserved across infra deploy."
