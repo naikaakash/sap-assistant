@@ -51,6 +51,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // SPA-registered URIs are treated as public clients by MS, so the token
       // request must NOT include `client_secret` — force PKCE-only auth.
       client: { token_endpoint_auth_method: "none" },
+      // Auth.js v5 beta throws `OAuthCallbackError: invalid_request` and
+      // SILENTLY DROPS the cause/`error_description` from Microsoft (passes
+      // the cause object as Error options, but the options reader only
+      // honours `{cause: ...}`). Intercept the token response here so we
+      // can log MS's full error JSON (error_description / trace_id /
+      // error_uri / timestamp) to container logs.
+      token: {
+        conform: async (response: Response) => {
+          try {
+            const cloned = response.clone();
+            const text = await cloned.text();
+            const status = response.status;
+            console.log(
+              "[auth][token-response]",
+              JSON.stringify({ status, body: text.slice(0, 4000) }),
+            );
+          } catch (e) {
+            console.error("[auth][token-response-log-failed]", e);
+          }
+          return response;
+        },
+      },
     }),
   ],
   session: { strategy: "jwt" },
