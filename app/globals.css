@@ -368,8 +368,8 @@ h1, h2, h3, h4, .title-font {
  */
 .app-container {
   display: flex;
-  height: 100vh;
-  width: 100vw;
+  height: 125vh;
+  width: 125vw;
   background-color: var(--bg-main);
   overflow: hidden;
   zoom: 0.8;
