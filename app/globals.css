@@ -69,6 +69,7 @@ html, body {
   font-family: var(--font-family-body);
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
+  zoom: 0.85;
 }
 
 /* Custom Scrollbars */
@@ -368,11 +369,10 @@ h1, h2, h3, h4, .title-font {
  */
 .app-container {
   display: flex;
-  height: 125vh;
-  width: 125vw;
+  height: 100vh;
+  width: 100vw;
   background-color: var(--bg-main);
   overflow: hidden;
-  zoom: 0.8;
 }
 
 .sidebar {
