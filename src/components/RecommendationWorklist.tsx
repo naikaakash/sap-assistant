@@ -610,7 +610,7 @@ export default function RecommendationWorklist() {
 
   // --- RENDERING ---
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', height: '100%', flex: 1 }}>
       
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -1065,9 +1065,9 @@ export default function RecommendationWorklist() {
       <div style={{
         position: 'fixed',
         top: '1.25rem',
+        bottom: '1.25rem',
         right: selectedRec ? '1.25rem' : '-500px',
         width: '450px',
-        height: 'calc(100vh - 2.5rem)',
         opacity: selectedRec ? 1 : 0,
         transition: 'right 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s',
         background: 'var(--bg-surface)',

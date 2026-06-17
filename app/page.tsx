@@ -3992,14 +3992,35 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                               {detailTab === 'kpi' && (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                                   
-                                  {/* Dynamic Delay warning context */}
-                                  <div style={{ background: 'rgba(244, 63, 94, 0.05)', border: '1px solid rgba(244, 63, 94, 0.2)', borderRadius: '0.375rem', padding: '0.75rem', fontSize: '0.75rem' }}>
+                                  {/* Dynamic Delay or Acknowledgement warning context */}
+                                  <div style={{ 
+                                    background: activeTab === 'acknowledgement' ? 'rgba(217, 119, 6, 0.05)' : 'rgba(244, 63, 94, 0.05)', 
+                                    border: `1px solid ${activeTab === 'acknowledgement' ? 'rgba(217, 119, 6, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`, 
+                                    borderRadius: '0.375rem', 
+                                    padding: '0.75rem', 
+                                    fontSize: '0.75rem' 
+                                  }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem', fontWeight: 700 }}>
-                                      <span style={{ color: 'var(--severity-critical-text)' }}>⚠️ Delay Diagnosis: {selectedDetail.delay_category}</span>
-                                      <span>{selectedDetail.days_overdue} days past due</span>
+                                      {activeTab === 'acknowledgement' ? (
+                                        <>
+                                          <span style={{ color: 'var(--severity-high-text)' }}>⚠️ Ack Discrepancy: {selectedDetail.acknowledgement_status}</span>
+                                          <span>Status Alert</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span style={{ color: 'var(--severity-critical-text)' }}>⚠️ Delay Diagnosis: {selectedDetail.delay_category}</span>
+                                          <span>{selectedDetail.days_overdue} days past due</span>
+                                        </>
+                                      )}
                                     </div>
-                                    <p style={{ color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                                      {selectedDetail.root_cause}
+                                    <p style={{ color: 'var(--text-secondary)', lineHeight: 1.4, margin: 0 }}>
+                                      {activeTab === 'acknowledgement' ? (
+                                        selectedDetail.acknowledgement_status === 'MISSING'
+                                          ? `This purchase order line is missing supplier confirmation. A manual reminder email should be dispatched.`
+                                          : `A supplier discrepancy was flagged. Review price/quantity fields and coordinate confirmations with the vendor.`
+                                      ) : (
+                                        selectedDetail.root_cause
+                                      )}
                                     </p>
                                   </div>
 
@@ -5534,7 +5555,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
 
           {/* TAB 3.5: RECOMMENDATION WORKLIST (PHASE 8F) */}
           {activeTab === 'recommendations' && (
-            <div id="recommendations-section">
+            <div id="recommendations-section" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%', height: '100%' }}>
               <RecommendationWorklist />
             </div>
           )}
