@@ -13,9 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SAP Assistant — Buyer/Planner Action Workbench",
+  title: "OrderPulse — Procurement Action Workbench",
   description:
-    "Supplier commitment control center: overdue workbench, acknowledgements, recommendations, supplier analytics.",
+    "PO follow-up, prioritized. Active overdue PO tracking, supplier acknowledgements, and buyer action workflows for procurement teams.",
+  icons: {
+    icon: "/brand/orderpulse-logo-icon.svg",
+  },
 };
 
 export default function RootLayout({

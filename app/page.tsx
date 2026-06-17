@@ -237,13 +237,16 @@ export default function BuyerPlannerWorkbench() {
   const [activeTab, setActiveTab] = useState<'overview' | 'overdue' | 'acknowledgement' | 'recommendations' | 'part' | 'supplier-analytics' | 'exception-analytics' | 'buyer-productivity' | 'control-tower' | 'copilot' | 'reminders' | 'collaboration' | 'workflow-pipeline' | 'autonomous-monitoring'>('overview');
 
   // User Preference Display Zoom Level State
-  const [zoomLevel, setZoomLevel] = useState<number>(() => {
+  const [zoomLevel, setZoomLevel] = useState<number>(0.88);
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('user-zoom-level');
-      return saved ? parseFloat(saved) : 0.88;
+      if (saved) {
+        setZoomLevel(parseFloat(saved));
+      }
     }
-    return 0.88;
-  });
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -2098,8 +2101,8 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
   return (
     <>
       <Head>
-        <title>Procurement Dashboard</title>
-        <meta name="description" content="Unified Procurement Operations Dashboard and Actions Workbench." />
+        <title>OrderPulse — Procurement Action Workbench</title>
+        <meta name="description" content="PO follow-up, prioritized. Active overdue PO tracking, supplier acknowledgements, and buyer action workflows for procurement teams." />
       </Head>
 
       <div className="app-container">
@@ -2108,22 +2111,30 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
         <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
           <div className="sidebar-inner">
           <div className="sidebar-logo">
-            <div style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '6px',
-              background: 'linear-gradient(135deg, #60a5fa 0%, #2563eb 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              color: '#fff',
-              flexShrink: 0,
-            }}>
-              A
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="url(#pulse-gradient)"
+              strokeWidth="2.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="sidebar-logo-icon"
+            >
+              <defs>
+                <linearGradient id="pulse-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#e11d48" />
+                  <stop offset="100%" stopColor="#1d4ed8" />
+                </linearGradient>
+              </defs>
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+            <div className="sidebar-brand-text-group">
+              <span className="sidebar-logo-text">
+                <span className="logo-order">Order</span>
+                <span className="logo-pulse">Pulse</span>
+              </span>
+              <span className="sidebar-tagline">ACTION WORKBENCH</span>
             </div>
-            <span className="sidebar-logo-text">Procurement Dashboard</span>
             <button
               type="button"
               className="sidebar-toggle"

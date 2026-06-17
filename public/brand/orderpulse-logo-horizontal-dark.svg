@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 32" width="160" height="32">
+  <defs>
+    <!-- Professional blue gradient representing active PO signal pulse -->
+    <linearGradient id="opGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <style>
+      .wordmark {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        fill: #0f172a;
+      }
+      .tagline {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 6.5px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        fill: #475569;
+      }
+    </style>
+  </defs>
+
+  <!-- Document/PO folded sheet containing a pulse signal wave -->
+  <g transform="translate(6, 4)">
+    <!-- Base folder/document border -->
+    <path d="M2 0h12l6 6v16c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V2C0 .9.9 0 2 0z" fill="url(#opGradient)" opacity="0.15" />
+    <path d="M2 0h12l6 6v16c0 1.1-.9 2-2 2H2c-1.1 0-2-.9-2-2V2C0 .9.9 0 2 0z" fill="none" stroke="url(#opGradient)" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- Folded paper corner -->
+    <path d="M14 0v6h6" fill="none" stroke="url(#opGradient)" stroke-width="1.5" stroke-linejoin="round" />
+    
+    <!-- Pulse wave inside document -->
+    <path d="M4 14h3l2-4l3 8l2-5.5l1.5 1.5H18" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Active signal node at the pulse end -->
+    <circle cx="17.5" cy="14" r="1.5" fill="#2563eb" />
+  </g>
+
+  <!-- Wordmark + Tagline text -->
+  <text x="36" y="16" class="wordmark">OrderPulse</text>
+  <text x="36" y="24" class="tagline">ACTION WORKBENCH</text>
+</svg>

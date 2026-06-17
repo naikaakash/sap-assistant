@@ -15,6 +15,10 @@ export default function RecommendationWorklist() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25;
+
   // Filters & Search
   const [selectedStatusTab, setSelectedStatusTab] = useState<string>('ALL_OPEN');
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,6 +67,10 @@ export default function RecommendationWorklist() {
   useEffect(() => {
     fetchRecommendations();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, typeFilter, selectedStatusTab]);
 
   // Fetch histories when selected recommendation changes
   useEffect(() => {
@@ -404,6 +412,12 @@ export default function RecommendationWorklist() {
 
     return true;
   });
+
+  const totalEntries = filteredRecommendations.length;
+  const totalPages = Math.ceil(totalEntries / itemsPerPage) || 1;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, totalEntries);
+  const paginatedRecommendations = filteredRecommendations.slice(startIndex, endIndex);
 
   // --- COUNTERS FOR METRICS ---
   const totalOpen = recommendations.filter(r => !isClosedStatus(r.lifecycleStatus)).length;
@@ -852,13 +866,15 @@ export default function RecommendationWorklist() {
       </section>
 
       {/* RECOMMENDATIONS TABLE GRID */}
-      <section style={{
+      <div style={{
         background: 'var(--bg-surface)',
         border: '1px solid var(--border-color)',
         borderRadius: '0.5rem',
         boxShadow: 'var(--shadow-sm)',
-        overflow: 'hidden'
+        display: 'flex',
+        flexDirection: 'column'
       }}>
+      <section style={{ overflowX: 'auto' }}>
         {loading ? (
           renderTableSkeleton()
         ) : error ? (
@@ -940,7 +956,8 @@ export default function RecommendationWorklist() {
             )}
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <>
+            <div>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.75rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'var(--bg-surface-elevated)' }}>
@@ -955,7 +972,7 @@ export default function RecommendationWorklist() {
                 </tr>
               </thead>
               <tbody>
-                {filteredRecommendations.map((rec) => {
+                {paginatedRecommendations.map((rec) => {
                   const badge = getStatusBadgeStyles(rec.lifecycleStatus);
                   const isSelected = selectedRec?.recommendationId === rec.recommendationId;
                   const vStyles = getVerificationBadgeStyles(rec.verificationStatus);
@@ -1044,8 +1061,89 @@ export default function RecommendationWorklist() {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </section>
+
+      {/* Pagination Controls — outside the overflow-clipped section */}
+      {!loading && !error && totalEntries > 0 && (
+        <div style={{
+          padding: '0.65rem 0.75rem',
+          borderTop: '1px solid var(--border-color)',
+          fontSize: '0.7rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.5rem',
+          flexShrink: 0
+        }}>
+          <span style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+            Showing {startIndex + 1}–{endIndex} of <strong style={{ color: 'var(--text-primary)' }}>{totalEntries}</strong> recommendations
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              style={{
+                padding: '0.25rem 0.6rem',
+                borderRadius: '0.25rem',
+                border: '1px solid var(--border-color)',
+                background: currentPage === 1 ? 'transparent' : 'var(--bg-surface-elevated)',
+                color: currentPage === 1 ? 'var(--text-muted)' : 'var(--text-primary)',
+                cursor: currentPage === 1 ? 'default' : 'pointer',
+                fontSize: '0.7rem',
+                fontWeight: 600
+              }}
+            >
+              ‹ Prev
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(p => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+              .map((p, idx, arr) => (
+                <React.Fragment key={p}>
+                  {idx > 0 && arr[idx - 1] !== p - 1 && <span style={{ color: 'var(--text-muted)' }}>…</span>}
+                  <button
+                    onClick={() => setCurrentPage(p)}
+                    style={{
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      border: '1px solid',
+                      borderColor: currentPage === p ? 'var(--color-primary)' : 'var(--border-color)',
+                      background: currentPage === p ? 'rgba(79,70,229,0.15)' : 'var(--bg-surface-elevated)',
+                      color: currentPage === p ? 'var(--color-primary)' : 'var(--text-secondary)',
+                      fontWeight: currentPage === p ? 700 : 400,
+                      cursor: 'pointer',
+                      fontSize: '0.7rem',
+                      minWidth: '1.8rem'
+                    }}
+                  >
+                    {p}
+                  </button>
+                </React.Fragment>
+              ))}
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              style={{
+                padding: '0.25rem 0.6rem',
+                borderRadius: '0.25rem',
+                border: '1px solid var(--border-color)',
+                background: currentPage === totalPages ? 'transparent' : 'var(--bg-surface-elevated)',
+                color: currentPage === totalPages ? 'var(--text-muted)' : 'var(--text-primary)',
+                cursor: currentPage === totalPages ? 'default' : 'pointer',
+                fontSize: '0.7rem',
+                fontWeight: 600
+              }}
+            >
+              Next ›
+            </button>
+          </div>
+          <span style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+            Page {currentPage} of {totalPages} · Click row to view details →
+          </span>
+        </div>
+      )}
+      </div>
 
       {/* DEV FOOTNOTE BADGE */}
       <footer style={{

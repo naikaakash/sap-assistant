@@ -11,7 +11,7 @@ import { auth } from "./auth";
  * "Sign in with Microsoft" button → MicrosoftEntraID provider).
  */
 export default auth((req) => {
-  const { pathname, hostname } = req.nextUrl;
+  const { pathname } = req.nextUrl;
 
   const isPublic =
     pathname.startsWith("/api/auth") ||
@@ -19,9 +19,7 @@ export default auth((req) => {
     pathname === "/api/health" ||
     pathname === "/api/hello";
 
-  const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
-
-  if (!req.auth && !isPublic && !isLocalhost) {
+  if (!req.auth && !isPublic) {
     const signInUrl = new URL("/signin", req.nextUrl.origin);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return Response.redirect(signInUrl);
