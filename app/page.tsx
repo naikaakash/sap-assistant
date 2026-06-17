@@ -3738,10 +3738,11 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
           {/* PROCUREMENT CONTEXT SIDE PANEL */}
                 <div style={{
                   position: 'fixed',
-                  top: '1.25rem',
-                  right: selectedItemKey ? '1.25rem' : '-500px',
+                  zoom: 0.85,
+                  top: 'calc(1.25rem / 0.85)',
+                  right: selectedItemKey ? 'calc(1.25rem / 0.85)' : '-600px',
                   width: '450px',
-                  height: 'calc(100vh - 2.5rem)',
+                  height: 'calc((100vh - 2.5rem) / 0.85)',
                   opacity: selectedItemKey ? 1 : 0,
                   transition: 'right 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s',
                   background: 'var(--bg-surface)',
@@ -9562,9 +9563,10 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                 {selectedIds.length > 0 && (
                   <div style={{
                     position: 'fixed',
-                    bottom: '1.5rem',
-                    left: '280px', // Matches sidebar width plus some margin
-                    right: '2rem',
+                    zoom: 0.85,
+                    bottom: 'calc(1.5rem / 0.85)',
+                    left: 'calc(280px / 0.85)',
+                    right: 'calc(2rem / 0.85)',
                     background: 'var(--bg-surface)',
                     border: '1px solid var(--border-color)',
                     borderRadius: '0.5rem',
@@ -9656,6 +9658,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                     animation: 'fadeIn 0.15s ease-out'
                   }}>
                     <div style={{
+                      zoom: 0.85,
                       background: 'var(--bg-surface)',
                       border: '1px solid var(--border-color)',
                       borderRadius: '0.625rem',
@@ -10098,10 +10101,11 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                 {/* VIEWPORT FIXED SLIDE-OUT DETAIL PANEL DRAWER */}
                 <div style={{
                   position: 'fixed',
-                  top: '1.25rem',
-                  right: selectedAlert ? '1.25rem' : '-500px',
+                  zoom: 0.85,
+                  top: 'calc(1.25rem / 0.85)',
+                  right: selectedAlert ? 'calc(1.25rem / 0.85)' : '-600px',
                   width: '450px',
-                  height: 'calc(100vh - 2.5rem)',
+                  height: 'calc((100vh - 2.5rem) / 0.85)',
                   opacity: selectedAlert ? 1 : 0,
                   transition: 'right 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s',
                   background: 'var(--bg-surface)',
@@ -10970,6 +10974,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
                     animation: 'fadeIn 0.15s ease-out'
                   }}>
                     <div style={{
+                      zoom: 0.85,
                       background: 'var(--bg-surface)',
                       border: '1px solid var(--border-color)',
                       borderRadius: '0.625rem',
@@ -11571,8 +11576,9 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
           {toastMessage && (
             <div style={{
               position: 'fixed',
-              bottom: '2rem',
-              right: '2rem',
+              zoom: 0.85,
+              bottom: 'calc(2rem / 0.85)',
+              right: 'calc(2rem / 0.85)',
               background: '#1f2937',
               border: '1px solid var(--border-color)',
               color: '#ffffff',
