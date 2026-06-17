@@ -476,6 +476,15 @@ h1, h2, h3, h4, .title-font {
   display: flex !important;
 }
 
+/* Zoom Controller: hide in collapsed rail, restore on hover */
+.sidebar.collapsed .sidebar-zoom-container {
+  display: none !important;
+}
+.sidebar.collapsed:hover .sidebar-zoom-container,
+.sidebar.collapsed:focus-within .sidebar-zoom-container {
+  display: flex !important;
+}
+
 /* Diagnostics button: center the gear in the rail, restore on hover */
 .sidebar.collapsed .sidebar-diagnostics-button {
   justify-content: center !important;

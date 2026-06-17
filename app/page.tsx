@@ -236,6 +236,22 @@ export default function BuyerPlannerWorkbench() {
   // Navigation State Sourced
   const [activeTab, setActiveTab] = useState<'overview' | 'overdue' | 'acknowledgement' | 'recommendations' | 'part' | 'supplier-analytics' | 'exception-analytics' | 'buyer-productivity' | 'control-tower' | 'copilot' | 'reminders' | 'collaboration' | 'workflow-pipeline' | 'autonomous-monitoring'>('overview');
 
+  // User Preference Display Zoom Level State
+  const [zoomLevel, setZoomLevel] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('user-zoom-level');
+      return saved ? parseFloat(saved) : 0.82;
+    }
+    return 0.82;
+  });
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('user-zoom-level', zoomLevel.toString());
+      (document.documentElement.style as any).zoom = zoomLevel.toString();
+    }
+  }, [zoomLevel]);
+
   const isModuleEnabled = (key: string): boolean => {
     const config = MODULE_CONFIGS.find(m => m.key === key);
     return config ? config.enabled : false;
@@ -2145,6 +2161,93 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
           </nav>
 
           <div className="sidebar-footer" style={{ borderTop: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column' }}>
+
+            {/* Display Zoom Controller */}
+            <div className="sidebar-zoom-container" style={{ borderBottom: '1px solid var(--border-color)', padding: '0.6rem 1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span className="sidebar-item-text" style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--text-muted)', letterSpacing: '0.03em', textTransform: 'uppercase' }}>
+                  Display Scale
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel(0.82)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--color-primary)',
+                    fontSize: '0.6rem',
+                    cursor: 'pointer',
+                    outline: 'none',
+                    padding: 0,
+                    fontWeight: 600
+                  }}
+                  title="Reset to default 82% zoom"
+                  className="sidebar-item-text"
+                >
+                  Reset
+                </button>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', width: '100%' }}>
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel(z => Math.max(0.70, parseFloat((z - 0.03).toFixed(2))))}
+                  disabled={zoomLevel <= 0.70}
+                  style={{
+                    flex: 1,
+                    background: zoomLevel <= 0.70 ? 'rgba(255,255,255,0.01)' : 'rgba(255,255,255,0.03)',
+                    border: '1px solid var(--border-color)',
+                    color: zoomLevel <= 0.70 ? 'var(--text-muted)' : 'var(--text-primary)',
+                    fontSize: '0.8rem',
+                    fontWeight: 'bold',
+                    padding: '0.2rem 0.4rem',
+                    borderRadius: '0.25rem',
+                    cursor: zoomLevel <= 0.70 ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.15s',
+                    outline: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  onMouseEnter={e => { if (zoomLevel > 0.70) e.currentTarget.style.background = 'rgba(59, 130, 246, 0.08)'; }}
+                  onMouseLeave={e => { if (zoomLevel > 0.70) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                  title="Zoom Out (Saves preference)"
+                >
+                  －
+                </button>
+
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, minWidth: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  {Math.round(zoomLevel * 100)}%
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => setZoomLevel(z => Math.min(1.05, parseFloat((z + 0.03).toFixed(2))))}
+                  disabled={zoomLevel >= 1.05}
+                  style={{
+                    flex: 1,
+                    background: zoomLevel >= 1.05 ? 'rgba(255,255,255,0.01)' : 'rgba(255,255,255,0.03)',
+                    border: '1px solid var(--border-color)',
+                    color: zoomLevel >= 1.05 ? 'var(--text-muted)' : 'var(--text-primary)',
+                    fontSize: '0.8rem',
+                    fontWeight: 'bold',
+                    padding: '0.2rem 0.4rem',
+                    borderRadius: '0.25rem',
+                    cursor: zoomLevel >= 1.05 ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.15s',
+                    outline: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                  onMouseEnter={e => { if (zoomLevel < 1.05) e.currentTarget.style.background = 'rgba(59, 130, 246, 0.08)'; }}
+                  onMouseLeave={e => { if (zoomLevel < 1.05) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                  title="Zoom In (Saves preference)"
+                >
+                  ＋
+                </button>
+              </div>
+            </div>
 
             {/* System Diagnostics Collapsible Panel */}
             <div style={{ overflow: 'hidden' }}>
