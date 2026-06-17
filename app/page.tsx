@@ -8640,7 +8640,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
             <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '1.5rem', width: '100%', height: '100%' }} className="animate-fade">
               
               {/* LEFT SIDE: CHAT INTERFACE */}
-              <div className="widget-panel" style={{ height: 'calc(100vh - 3rem)', minHeight: '450px', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div className="widget-panel" style={{ height: '100%', minHeight: '450px', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 
                 {/* Tab Header */}
                 <div className="widget-header" style={{ paddingBottom: '0.85rem' }}>
