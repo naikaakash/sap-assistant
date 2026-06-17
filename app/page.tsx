@@ -8636,8 +8636,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
           )}
 
           {/* TAB 8: AI SOURCING COPILOT (Phase 3A) */}
-          {activeTab === 'copilot' && (
-            <div style={{ display: 'flex', flexDirection: 'column', flex: 1, gap: '1.5rem', width: '100%', height: '100%' }} className="animate-fade">
+          <div style={{ display: activeTab === 'copilot' ? 'flex' : 'none', flexDirection: 'column', flex: 1, gap: '1.5rem', width: '100%', height: '100%' }} className="animate-fade">
               
               {/* LEFT SIDE: CHAT INTERFACE */}
               <div className="widget-panel" style={{ height: '100%', minHeight: '450px', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -8867,7 +8866,6 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
               )}
 
             </div>
-          )}
 
 
           {/* TAB 9: AUTOMATED REMINDERS WORKFLOW AUTOMATION (Phase 4A & 4B) */}
