@@ -514,17 +514,14 @@ async function fetchJoinedWorklist(): Promise<OverdueWorklistItem[]> {
     const hasRecoveryEvidence = !!(activeAsn && ['IN_TRANSIT'].includes(activeAsn.status));
     const severity = calculateExceptionSeverity(daysOverdue, hasRecoveryEvidence);
 
-    // Derivation of confirmationControlKey with revised fallback warning check
+    // Derivation of confirmationControlKey from purchase_order_items (schedule-line fallback removed)
     const itemConfKey = poItem.confirmation_control_key;
-    const schedConfKey = schedule.confirmation_control_key;
-
-    let confirmationControlKey = null;
-    if (itemConfKey !== undefined && itemConfKey !== null) {
-      confirmationControlKey = itemConfKey.trim();
-    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-      confirmationControlKey = schedConfKey.trim();
-      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${ex.po_number} Item ${ex.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    if (!poItem.po_number) {
+      console.warn(`[Data Integrity Warning] No purchase_order_items entry found for PO ${ex.po_number} Item ${ex.item_number}`);
+    } else if (itemConfKey === undefined || itemConfKey === null) {
+      console.warn(`[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO ${ex.po_number} Item ${ex.item_number}`);
     }
+    const confirmationControlKey = itemConfKey ? itemConfKey.trim() : '';
 
     // Dynamic Root Cause Diagnosis for Phase 1B Milestone 1 Sourced
     let delayCategory = 'Pending Delay Verification';
@@ -1015,17 +1012,14 @@ export async function getExceptionDetail(
     return dateB.localeCompare(dateA);
   });
 
-  // Derivation of confirmationControlKey with revised fallback warning check
+  // Derivation of confirmationControlKey from purchase_order_items (schedule-line fallback removed)
   const itemConfKey = poItem.confirmation_control_key;
-  const schedConfKey = itemSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
-
-  let confirmationControlKey = null;
-  if (itemConfKey !== undefined && itemConfKey !== null) {
-    confirmationControlKey = itemConfKey.trim();
-  } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-    confirmationControlKey = schedConfKey.trim();
-    console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${poNumber} Item ${itemNumber}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+  if (!poItem.po_number) {
+    console.warn(`[Data Integrity Warning] No purchase_order_items entry found for PO ${poNumber} Item ${itemNumber}`);
+  } else if (itemConfKey === undefined || itemConfKey === null) {
+    console.warn(`[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO ${poNumber} Item ${itemNumber}`);
   }
+  const confirmationControlKey = itemConfKey ? itemConfKey.trim() : '';
   const requiresAck = confirmationControlKey === 'ZACK';
   let ackDetails = null;
   if (ack) {
@@ -1566,22 +1560,22 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
   // Unified list of raw acknowledgements (real + derived)
   const unifiedAcks = [...acksRaw];
 
-  // For each schedule line, join to items to find confirmation_control_key (with schedule-line level fallback)
+  // For each schedule line, join to items to find confirmation_control_key (schedule-line level fallback removed)
   for (const s of schedulesRaw) {
     const paddedItem = padItemNumber(s.item_number);
     const key = `${s.po_number}_${paddedItem}`;
-    const poItem = itemsMap.get(key) || {};
+    const poItem = itemsMap.get(key);
     
-    const itemConfKey = poItem.confirmation_control_key;
-    const schedConfKey = s.confirmation_control_key;
-
-    let confirmationControlKey = null;
-    if (itemConfKey !== undefined && itemConfKey !== null) {
-      confirmationControlKey = itemConfKey.trim();
-    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-      confirmationControlKey = schedConfKey.trim();
-      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${s.po_number} Item ${s.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    if (!poItem) {
+      console.warn(`[Data Integrity Warning] No purchase_order_items entry found for PO ${s.po_number} Item ${s.item_number}`);
     }
+
+    const itemConfKey = poItem ? poItem.confirmation_control_key : undefined;
+    if (poItem && (itemConfKey === undefined || itemConfKey === null)) {
+      console.warn(`[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO ${s.po_number} Item ${s.item_number}`);
+    }
+
+    const confirmationControlKey = itemConfKey ? itemConfKey.trim() : '';
 
     if (confirmationControlKey === 'ZACK') {
       if (!acksKeys.has(key)) {
@@ -1618,18 +1612,14 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
     const followups = parseInt(ack.buyer_followup_count || '0', 10);
     const exception_id = exInfo.exception_id || `EX_ACK_${ack.po_number}_${ack.item_number}`;
 
-    // Derivation of confirmationControlKey with revised fallback warning check
+    // Derivation of confirmationControlKey from purchase_order_items (schedule-line fallback removed)
     const itemConfKey = poItem.confirmation_control_key;
-    const childSchedules = schedulesRaw.filter(s => s.po_number === ack.po_number && padItemNumber(s.item_number) === padItemNumber(ack.item_number));
-    const schedConfKey = childSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
-
-    let confirmationControlKey = null;
-    if (itemConfKey !== undefined && itemConfKey !== null) {
-      confirmationControlKey = itemConfKey.trim();
-    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-      confirmationControlKey = schedConfKey.trim();
-      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${ack.po_number} Item ${ack.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    if (!poItem.po_number) {
+      console.warn(`[Data Integrity Warning] No purchase_order_items entry found for PO ${ack.po_number} Item ${ack.item_number}`);
+    } else if (itemConfKey === undefined || itemConfKey === null) {
+      console.warn(`[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO ${ack.po_number} Item ${ack.item_number}`);
     }
+    const confirmationControlKey = itemConfKey ? itemConfKey.trim() : '';
 
     // SME Severity Logic Rules
     let severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' = 'LOW';
@@ -4592,7 +4582,7 @@ export async function syncErpScheduleLine(poNumber: string, itemNumber: string):
     });
 
     if (updatedSchedule) {
-      const headers = ['po_number','item_number','schedule_line','delivery_date','scheduled_qty','received_qty','open_qty','statistical_delivery_date','confirmed_date','confirmation_control_key'];
+      const headers = ['po_number','item_number','schedule_line','delivery_date','scheduled_qty','received_qty','open_qty','statistical_delivery_date','confirmed_date'];
       const csvContent = [
         headers.join(','),
         ...newSchedules.map(row => headers.map(h => {

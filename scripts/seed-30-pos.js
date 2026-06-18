@@ -202,10 +202,11 @@ mockPos.forEach(item => {
   const deliveryCompletedFlag = item.deletion_completion_indicator === 'COMPLETED' ? 'Y' : 'N';
   const isService = matId.startsWith('S');
 
+  const poLineVal = (item.po_line_value !== null && item.po_line_value !== undefined) ? item.po_line_value : (item.ordered_quantity * (item.unit_price || 0));
   poItems.push([
     poNo, itemNo, matId, item.material_service_description, item.plant, 'SL01',
-    item.ordered_quantity, isService ? 'HR' : 'PC', item.unit_price.toFixed(2), '1', 
-    item.po_line_value.toFixed(2), item.delivery_date, isService ? 'SERVICE' : 'STANDARD',
+    item.ordered_quantity, isService ? 'HR' : 'PC', (item.unit_price !== null && item.unit_price !== undefined) ? item.unit_price.toFixed(2) : '', '1', 
+    poLineVal.toFixed(2), item.delivery_date, isService ? 'SERVICE' : 'STANDARD',
     isService ? 'K' : '', deletionFlag, deliveryCompletedFlag, 'Y', 'Y',
     item.acknowledgement_required === 'Y' ? 'ZACK' : ''
   ]);
@@ -213,8 +214,7 @@ mockPos.forEach(item => {
   // 3. Schedule Line
   poScheduleLines.push([
     poNo, itemNo, '0001', item.delivery_date, item.ordered_quantity, item.received_quantity, 
-    item.open_quantity, item.delivery_date, item.acknowledgement_date || '', 
-    item.acknowledgement_required === 'Y' ? 'ZACK' : ''
+    item.open_quantity, item.delivery_date, item.acknowledgement_date || ''
   ]);
 
   // 4. Exception (if any)
@@ -281,7 +281,7 @@ writeCsvFile('purchase_order_items.csv',
 );
 
 writeCsvFile('po_schedule_lines.csv',
-  ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date', 'confirmation_control_key'],
+  ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date'],
   poScheduleLines
 );
 

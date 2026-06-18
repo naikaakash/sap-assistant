@@ -275,14 +275,7 @@ async function runTests() {
     const poItem = itemsMap.get(key) || {};
     
     const itemConfKey = poItem.confirmation_control_key;
-    const schedConfKey = s.confirmation_control_key;
-
-    let confirmationControlKey = null;
-    if (itemConfKey !== undefined && itemConfKey !== null) {
-      confirmationControlKey = itemConfKey.trim();
-    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-      confirmationControlKey = schedConfKey.trim();
-    }
+    const confirmationControlKey = itemConfKey ? itemConfKey.trim() : '';
 
     if (confirmationControlKey === 'ZACK') {
       if (!acksKeys.has(key)) {
@@ -563,10 +556,10 @@ async function runTests() {
   if (isServerRunning) {
     try {
       // 1. Confirm PO 4500002038 item 00010 has confirmation_control_key = ZACK before API call
-      const schedulesBefore = readCsv('po_schedule_lines.csv');
-      const po2038SchedBefore = schedulesBefore.find(s => s.po_number === '4500002038' && padItemNumber(s.item_number) === '00010');
-      assert(po2038SchedBefore !== undefined, 'PO 4500002038 item 00010 exists in po_schedule_lines.csv');
-      assert(po2038SchedBefore.confirmation_control_key === 'ZACK', `PO 4500002038 item 00010 has confirmation_control_key = ZACK before API call (got: ${po2038SchedBefore.confirmation_control_key})`);
+      const itemsBefore = readCsv('purchase_order_items.csv');
+      const po2038ItemBefore = itemsBefore.find(i => i.po_number === '4500002038' && padItemNumber(i.item_number) === '00010');
+      assert(po2038ItemBefore !== undefined, 'PO 4500002038 item 00010 exists in purchase_order_items.csv');
+      assert(po2038ItemBefore.confirmation_control_key === 'ZACK', `PO 4500002038 item 00010 has confirmation_control_key = ZACK before API call (got: ${po2038ItemBefore.confirmation_control_key})`);
 
       // 2. Call the same API path used by Supplier Acknowledgements / refresh
       const ackListRes = await makeRequest({
@@ -577,13 +570,13 @@ async function runTests() {
       });
       assert(ackListRes.status === 200, `Supplier Acknowledgements API query returned status 200`);
 
-      // 3. Re-read po_schedule_lines.csv
-      const schedulesAfter = readCsv('po_schedule_lines.csv');
-      const po2038SchedAfter = schedulesAfter.find(s => s.po_number === '4500002038' && padItemNumber(s.item_number) === '00010');
+      // 3. Re-read purchase_order_items.csv
+      const itemsAfter = readCsv('purchase_order_items.csv');
+      const po2038ItemAfter = itemsAfter.find(i => i.po_number === '4500002038' && padItemNumber(i.item_number) === '00010');
       
       // 4. Confirm confirmation_control_key is still ZACK (proving CSV source data is preserved)
-      assert(po2038SchedAfter !== undefined, 'PO 4500002038 item 00010 still exists in po_schedule_lines.csv');
-      assert(po2038SchedAfter.confirmation_control_key === 'ZACK', `PO 4500002038 item 00010 still has confirmation_control_key = ZACK after API call (CSV preserved)`);
+      assert(po2038ItemAfter !== undefined, 'PO 4500002038 item 00010 still exists in purchase_order_items.csv');
+      assert(po2038ItemAfter.confirmation_control_key === 'ZACK', `PO 4500002038 item 00010 still has confirmation_control_key = ZACK after API call (CSV preserved)`);
 
       // 5. Confirm the API response includes PO 4500002038 item 00010 with acknowledgementStatus = MISSING
       const po2038AckItem = ackListRes.body.data.find(item => item.po_number === '4500002038' && padItemNumber(item.item_number) === '00010');

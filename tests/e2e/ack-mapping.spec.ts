@@ -34,9 +34,9 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
       const newItem = '4500001000,00010,M100001,Microprocessor Core v1,PL01,SL01,100,PC,15.00,1,1500.00,2026-06-25,STANDARD,,N,N,Y,Y,ZACK';
       fs.writeFileSync(ITEM_CSV_PATH, [...itemLines, newItem].join('\n') + '\n', 'utf-8');
 
-      // Append a matching schedule line without ZACK (blank)
+      // Append a matching schedule line (9 columns)
       const schedLines = backupSched.trim().split('\n');
-      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,,';
+      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,';
       fs.writeFileSync(SCHED_CSV_PATH, [...schedLines, newSched].join('\n') + '\n', 'utf-8');
 
       // Step B: Reload page and navigate to Supplier Acks
@@ -56,7 +56,7 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
     }
   });
 
-  test('2. Blank item-level confirmation_control_key makes child schedule line ACK_NOT_REQUIRED, even if schedule line is ZACK', async ({ page }) => {
+  test('2. Blank item-level confirmation_control_key makes child schedule line ACK_NOT_REQUIRED', async ({ page }) => {
     const backupHeaders = fs.readFileSync(HEADER_CSV_PATH, 'utf-8');
     const backupItems = fs.readFileSync(ITEM_CSV_PATH, 'utf-8');
     const backupSched = fs.readFileSync(SCHED_CSV_PATH, 'utf-8');
@@ -72,9 +72,9 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
       const newItem = '4500001000,00010,M100001,Microprocessor Core v1,PL01,SL01,100,PC,15.00,1,1500.00,2026-06-25,STANDARD,,N,N,Y,Y,';
       fs.writeFileSync(ITEM_CSV_PATH, [...itemLines, newItem].join('\n') + '\n', 'utf-8');
 
-      // Append a matching schedule line WITH ZACK
+      // Append a matching schedule line (9 columns)
       const schedLines = backupSched.trim().split('\n');
-      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,,ZACK';
+      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,';
       fs.writeFileSync(SCHED_CSV_PATH, [...schedLines, newSched].join('\n') + '\n', 'utf-8');
 
       // Step B: Reload page and navigate to Supplier Acks
@@ -82,7 +82,7 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
       await page.waitForSelector('[data-testid="sidebar-tab-overview"]');
       await page.click('[data-testid="sidebar-tab-acknowledgement"]');
 
-      // Step C: Verify PO 4500001000 is NOT present in the worklist (item blank overrides schedule line ZACK)
+      // Step C: Verify PO 4500001000 is NOT present in the worklist (blank item overrides any schedule line default)
       await page.waitForSelector('[data-testid="ack-total-count-badge"]');
       const row = page.locator('[data-testid="ack-row-4500001000-00010"]').first();
       await expect(row).not.toBeVisible({ timeout: 5000 });
@@ -94,16 +94,10 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
     }
   });
 
-  test('3. Temporary fallback warns and uses schedule-line ZACK only when item-level record is missing', async ({ page }) => {
+  test('3. No fallback/data-integrity: missing item-level record does not fall back to schedule lines and is not acknowledgement-required', async ({ page }) => {
     const backupHeaders = fs.readFileSync(HEADER_CSV_PATH, 'utf-8');
     const backupItems = fs.readFileSync(ITEM_CSV_PATH, 'utf-8');
     const backupSched = fs.readFileSync(SCHED_CSV_PATH, 'utf-8');
-
-    // Monitor browser console logs for warnings
-    const consoleMessages: string[] = [];
-    page.on('console', msg => {
-      consoleMessages.push(msg.text());
-    });
 
     try {
       // Step A: Append a PO header
@@ -112,9 +106,10 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
       fs.writeFileSync(HEADER_CSV_PATH, [...headerLines, newHeader].join('\n') + '\n', 'utf-8');
 
       // Do NOT append any PO item to ITEM_CSV (so item-level record is missing)
-      // Append a matching schedule line WITH ZACK
+
+      // Append a matching schedule line (9 columns)
       const schedLines = backupSched.trim().split('\n');
-      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,,ZACK';
+      const newSched = '4500001000,00010,0001,2026-06-25,100,0,100,2026-06-25,';
       fs.writeFileSync(SCHED_CSV_PATH, [...schedLines, newSched].join('\n') + '\n', 'utf-8');
 
       // Step B: Reload page and navigate to Supplier Acks
@@ -122,14 +117,10 @@ test.describe('ACK confirmation_control_key Source Correction E2E Tests', () => 
       await page.waitForSelector('[data-testid="sidebar-tab-overview"]');
       await page.click('[data-testid="sidebar-tab-acknowledgement"]');
 
-      // Step C: Verify PO 4500001000 is visible (fallback to schedule line ZACK is active)
+      // Step C: Verify PO 4500001000 is NOT present in the worklist (proves no fallback is active)
       await page.waitForSelector('[data-testid="ack-total-count-badge"]');
       const row = page.locator('[data-testid="ack-row-4500001000-00010"]').first();
-      await expect(row).toBeVisible({ timeout: 15000 });
-
-      // Step D: Verify console warning was logged on the server/client
-      await page.waitForTimeout(1000);
-      await expect(page.locator('[data-testid="sidebar-tab-acknowledgement"]')).toHaveClass(/active/);
+      await expect(row).not.toBeVisible({ timeout: 5000 });
     } finally {
       // Restore backups
       fs.writeFileSync(HEADER_CSV_PATH, backupHeaders, 'utf-8');

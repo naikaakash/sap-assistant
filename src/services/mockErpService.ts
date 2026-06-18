@@ -576,16 +576,7 @@ export async function getPurchaseOrderRegisterRaw(): Promise<any[]> {
 
     const itemSchedules = schedules.filter(s => s.po_number === item.po_number && padItemNumber(s.item_number) === padItemNumber(item.item_number));
     
-    const itemConfKey = item.confirmation_control_key;
-    const schedConfKey = itemSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
-
-    let confirmationControlKey = null;
-    if (itemConfKey !== undefined && itemConfKey !== null) {
-      confirmationControlKey = itemConfKey.trim();
-    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
-      confirmationControlKey = schedConfKey.trim();
-      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${item.po_number} Item ${item.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
-    }
+    const confirmationControlKey = item.confirmation_control_key ? item.confirmation_control_key.trim() : '';
     const requiresAck = confirmationControlKey === 'ZACK';
 
     return {

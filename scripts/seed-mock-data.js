@@ -399,8 +399,7 @@ mockPos.forEach(poOrItem => {
 
         poScheduleLines.push([
           poNo, itemNo, '0001', itemDeliveryDate, itemOrderedQty, receivedQty, 
-          openQty, itemDeliveryDate, item.acknowledgement_date || '', 
-          item.acknowledgement_required === 'Y' ? 'ZACK' : ''
+          openQty, itemDeliveryDate, item.acknowledgement_date || ''
         ]);
 
         // Acknowledgement
@@ -466,8 +465,7 @@ mockPos.forEach(poOrItem => {
 
           poScheduleLines.push([
             poNo, itemNo, slNo, slDeliveryDate, slScheduledQty, slReceivedQty, 
-            slOpenQty, slDeliveryDate, ackDate || '', 
-            sl.acknowledgement_required === 'Y' ? 'ZACK' : ''
+            slOpenQty, slDeliveryDate, ackDate || ''
           ]);
 
           // Loop acknowledgements
@@ -554,8 +552,7 @@ mockPos.forEach(poOrItem => {
     // 3. Schedule Line
     poScheduleLines.push([
       poNo, itemNo, '0001', item.delivery_date, item.ordered_quantity, item.received_quantity, 
-      openQty, item.delivery_date, item.acknowledgement_date || '', 
-      item.acknowledgement_required === 'Y' ? 'ZACK' : ''
+      openQty, item.delivery_date, item.acknowledgement_date || ''
     ]);
 
     // 4. Acknowledgement
@@ -596,7 +593,7 @@ writeCsvFile('purchase_order_items.csv',
 );
 
 writeCsvFile('po_schedule_lines.csv',
-  ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date', 'confirmation_control_key'],
+  ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date'],
   poScheduleLines
 );
 

@@ -186,7 +186,7 @@ export interface PurchaseOrderLine {
   openQuantity: number;         // Max(0, orderedQuantity − receivedQuantity)
   netPrice: number;             // net_price from purchase_order_items.csv
   openValue: number;            // openQuantity * netPrice
-  confirmationControlKey?: string; // confirmation_control_key from purchase_order_items.csv (with schedule-line fallback)
+  confirmationControlKey?: string; // confirmation_control_key from purchase_order_items.csv
 
   // Dates
   requestedDeliveryDate: string;   // due_date / delivery_date (date-shifted)

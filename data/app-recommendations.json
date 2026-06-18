@@ -16,12 +16,12 @@
     "createdBy": "demo.seed",
     "createdAt": "2026-06-08T10:00:00.000Z",
     "updatedBy": "buyer-workbench",
-    "updatedAt": "2026-06-18T15:13:57.819Z",
+    "updatedAt": "2026-06-18T16:14:58.958Z",
     "version": 2,
     "linkedActionIds": [],
     "supplierReminderId": null,
     "supplierResponseId": null,
-    "closedAt": "2026-06-18T15:13:57.819Z",
+    "closedAt": "2026-06-18T16:14:58.958Z",
     "closureReason": "Resolved by buyer in Playwright E2E"
   },
   {
@@ -156,10 +156,10 @@
     "createdBy": "demo.seed",
     "createdAt": "2026-06-08T10:00:00.000Z",
     "updatedBy": "buyer.demo",
-    "updatedAt": "2026-06-18T15:13:52.033Z",
+    "updatedAt": "2026-06-18T16:14:54.874Z",
     "version": 2,
     "linkedActionIds": [],
-    "supplierReminderId": "691ab2e3-ba86-498d-a021-06c7d09504f5",
+    "supplierReminderId": "300f6e62-69dc-4b50-b2de-f8939a4ef1b4",
     "supplierResponseId": null
   },
   {

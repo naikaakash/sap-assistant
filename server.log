@@ -1,7 +1,7 @@
 [1m[38;2;173;127;168m▲ Next.js 16.2.6[39m[22m
 - Local:         http://localhost:3000
 - Network:       http://10.0.0.198:3000
-[32m[1m✓[22m[39m Ready in 1130ms
+[32m[1m✓[22m[39m Ready in 1156ms
 [33m[1m⚠[22m[39m "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
 [instrumentation] DATA_SOURCE=csv — skipping SQL boot.
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
@@ -16,599 +16,39 @@ MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=t
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
 MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [32m'N'[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [32m'N'[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
-MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
-MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
-MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
-MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  material_id: [32m'M100001'[39m,
-  material_description: [32m'Microprocessor Core v1'[39m,
-  plant: [32m'PL01'[39m,
-  storage_location: [32m'SL01'[39m,
-  order_qty: [32m'100'[39m,
-  uom: [32m'PC'[39m,
-  net_price: [32m'15.00'[39m,
-  price_unit: [32m'1'[39m,
-  item_value: [32m'1500.00'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  item_category: [32m'STANDARD'[39m,
-  account_assignment_category: [32m''[39m,
-  deletion_flag: [32m'N'[39m,
-  delivery_completed_flag: [32m'N'[39m,
-  invoice_receipt_flag: [32m'Y'[39m,
-  goods_receipt_flag: [32m'Y'[39m,
-  confirmation_control_key: [32m''[39m
-}
-DEBUG 4500001000 derived confirmationControlKey: 
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
@@ -625,208 +65,19 @@ MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=fal
 MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
 MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
 MIDDLEWARE CHECK: pathname=/api/po-acknowledgement/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
-DEBUG 4500001000 schedule line: {
-  po_number: [32m'4500001000'[39m,
-  item_number: [32m'00010'[39m,
-  schedule_line: [32m'0001'[39m,
-  delivery_date: [32m'2026-07-03'[39m,
-  scheduled_qty: [32m'100'[39m,
-  received_qty: [32m'0'[39m,
-  open_qty: [32m'100'[39m,
-  statistical_delivery_date: [32m'2026-07-03'[39m,
-  confirmed_date: [32m''[39m,
-  confirmation_control_key: [32m'ZACK'[39m
-}
-DEBUG 4500001000 poItem: {}
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 derived confirmationControlKey: ZACK
-DEBUG 4500001000 pushed to unifiedAcks
-[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO 4500001000 Item 00010, falling back to po_schedule_lines.confirmation_control_key (ZACK)
-DEBUG 4500001000 filtering detail: {
-  po_number: [32m'4500001000'[39m,
-  isDeleted: [33mfalse[39m,
-  isCompleted: [33mfalse[39m,
-  isClosedOrCancelled: [33mfalse[39m,
-  poItem_deletion_flag: [90mundefined[39m,
-  poItem_deletion_completion_indicator: [90mundefined[39m,
-  poItem_delivery_completed_flag: [90mundefined[39m,
-  poHeader_header_status: [32m'OPEN'[39m,
-  poHeader_status: [90mundefined[39m
-}
+[Data Integrity Warning] No purchase_order_items entry found for PO 4500001000 Item 00010
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
@@ -844,7 +95,47 @@ MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true
 MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009991 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009992 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009993 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009994 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009995 Item 00010
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
@@ -867,10 +158,18 @@ MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true au
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/filters PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/overview/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/overview/details PLAYWRIGHT_TEST=1 isBypass=true auth=false
-MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+MIDDLEWARE CHECK: pathname=/api/po-overdue/worklist PLAYWRIGHT_TEST=1 isBypass=true auth=false
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
+MIDDLEWARE CHECK: pathname=/api/po-overdue/summary PLAYWRIGHT_TEST=1 isBypass=true auth=false
+[Data Integrity Warning] confirmation_control_key is missing/null in purchase_order_items for PO 4500009999 Item 00010
 MIDDLEWARE CHECK: pathname=/ PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/control-tower PLAYWRIGHT_TEST=1 isBypass=true auth=false
 MIDDLEWARE CHECK: pathname=/api/auth/session PLAYWRIGHT_TEST=1 isBypass=true auth=false

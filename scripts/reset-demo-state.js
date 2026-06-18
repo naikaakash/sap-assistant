@@ -231,7 +231,7 @@ function runReset() {
     const openQty = Math.max(0, orderQty - grQty);
     poScheduleLines.push([
       poNumber, itemNumber, '0001', deliveryDate, orderQty, grQty, openQty,
-      deliveryDate, ackDate || '', ackStatus ? 'ZACK' : ''
+      deliveryDate, ackDate || ''
     ]);
 
     // 4. Exception (if any)
@@ -404,7 +404,7 @@ function runReset() {
   );
 
   writeCsvFile('po_schedule_lines.csv',
-    ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date', 'confirmation_control_key'],
+    ['po_number', 'item_number', 'schedule_line', 'delivery_date', 'scheduled_qty', 'received_qty', 'open_qty', 'statistical_delivery_date', 'confirmed_date'],
     poScheduleLines
   );
 
