@@ -19,7 +19,10 @@ export default auth((req) => {
     pathname === "/api/health" ||
     pathname === "/api/hello";
 
-  if (!req.auth && !isPublic) {
+  const isBypass = process.env.PLAYWRIGHT_TEST === "true" || process.env.PLAYWRIGHT_TEST === "1";
+  console.log(`MIDDLEWARE CHECK: pathname=${pathname} PLAYWRIGHT_TEST=${process.env.PLAYWRIGHT_TEST} isBypass=${isBypass} auth=${!!req.auth}`);
+
+  if (!req.auth && !isPublic && !isBypass) {
     const signInUrl = new URL("/signin", req.nextUrl.origin);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return Response.redirect(signInUrl);

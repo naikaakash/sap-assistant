@@ -1,0 +1,34 @@
+Procurement Buyer/Planner Action Workbench Roadmap
+Product VisionA Buyer/Planner Action Workbench that helps procurement and supply chain teams identify problems, prioritize actions, collaborate with suppliers, and eventually automate follow-up activities.Core Philosophy:Visibility first → Actionability second → Automation third
+Phase 1 – Visibility Foundation
+1A – Executive Overview: KPI dashboard, filters, search-driven PO details.
+1B – Overdue PO Workbench: Buyer worklist for overdue POs.
+1C – Supplier Acknowledgement Workbench: Supplier response visibility.
+1D – Part Availability Workbench: Inventory and shortage visibility.
+1E – Control Tower Consolidation: Unified navigation and visibility platform.
+Phase 2 – Guided Actions
+2A – Action Recommendations: Suggest buyer actions.
+2B – Prioritization Engine: Risk and impact scoring.
+2C – Supplier Performance Analytics: Supplier KPIs and trends.
+2D – Exception Analytics: Procurement exception insights.
+2E – Buyer Productivity Workbench: Action tracking and productivity.
+Phase 3 – AI Assistance
+3A – Procurement Copilot: AI assistant for procurement questions.
+3B – Root Cause Analysis: AI explanations of issues.
+3C – Supplier Intelligence: AI supplier summaries.
+3D – Predictive Risk: Delay and shortage predictions.
+3E – Executive AI Insights: Executive summaries and reporting.
+Phase 4 – Workflow Automation
+4A – Supplier Reminder Agent: Human-approved reminders.
+4B – Acknowledgement Follow-Up Agent: Tracks and follows up.
+4C – Escalation Agent: Escalation workflows.
+4D – Planner Collaboration Agent: Buyer-planner coordination.
+4E – Multi-Agent Workflow: Agents working together.
+Phase 5 – Autonomous Procurement Agents
+5A – Autonomous Monitoring: 24x7 monitoring.
+5B – Autonomous Supplier Engagement: Automated supplier contact.
+5C – Autonomous Risk Detection: Proactive risk identification.
+5D – Procurement Decision Support: Recommendations and alternatives.
+5E – Procurement Agent Platform: Full multi-agent procurement platform.
+Current MVP
+PO Overdue Agent, Supplier Acknowledgement Agent, and Part Availability Agent surfaced through a Buyer/Planner Action Workbench.

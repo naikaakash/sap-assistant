@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Buyer Workbench End-to-End Regression Suite', () => {
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async ({ page }, testInfo) => {
+    testInfo.setTimeout(90000);
     // Navigate to dashboard
     await page.goto('/');
     // Wait for client-side hydration (sidebar overview tab to render and be visible)

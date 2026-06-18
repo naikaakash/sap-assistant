@@ -1,4 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
+import { loadEnvConfig } from '@next/env';
+
+loadEnvConfig(process.cwd());
+process.env.PLAYWRIGHT_TEST = 'true';
 
 export default defineConfig({
   testDir: './tests/e2e',
@@ -19,9 +23,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx next dev',
+    command: 'npx next start > server.log 2>&1',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120000,
   },
 });

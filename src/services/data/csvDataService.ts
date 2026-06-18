@@ -3,6 +3,25 @@ import path from 'path';
 import fs from 'fs';
 import { isSqlMode } from './sqlClient';
 import { loadTableRows } from './sqlTableRows';
+import {
+  calculatePlantStatus,
+  calculateExceptionSeverity,
+  calculateSystemAgentStatus,
+  generateDynamicRecentActivity
+} from '../calculationUtilities';
+
+function readJsonFile(filename: string): any[] {
+  try {
+    const filePath = path.join(process.cwd(), 'data', filename);
+    if (fs.existsSync(filePath)) {
+      return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+  } catch (e) {
+    console.error(`Failed to read JSON file ${filename}:`, e);
+  }
+  return [];
+}
+
 
 const DATA_ROOT = path.join(process.cwd(), 'procurement_data_sample');
 
@@ -85,8 +104,9 @@ export async function readCsv(filename: string): Promise<any[]> {
     const mtime = stats.mtimeMs;
     
     let rawData: any[];
-    // If cache exists and file hasn't been modified on disk, get from cache
-    if (cache[filename] && cache[filename].mtime === mtime) {
+    // If cache exists and file hasn't been modified on disk, get from cache (bypass in tests)
+    const isPlaywright = process.env.PLAYWRIGHT_TEST === 'true';
+    if (cache[filename] && cache[filename].mtime === mtime && !isPlaywright) {
       rawData = cache[filename].data;
     } else {
       const data = await csv().fromFile(filePath);
@@ -268,6 +288,7 @@ export interface OverdueWorklistItem {
   assigned_buyer: string;
   root_cause: string;
   delay_category: string; // Dynamic business category for Phase 1B
+  confirmationControlKey?: string; // Item-level confirmation control key (with schedule fallback)
   on_time_delivery_pct: number;
   avg_response_days: number;
   risk_score: number;
@@ -489,25 +510,20 @@ async function fetchJoinedWorklist(): Promise<OverdueWorklistItem[]> {
     const netPrice = parseFloat(poItem.net_price || '0');
     const openValue = openQty * netPrice || parseFloat(ex.financial_impact_estimate || '0');
 
-    // Severity Logic:
-    // Critical: > 7 days
-    // High: 3 - 7 days
-    // Medium: 1 - 2 days
-    // Low: overdue but has recovery evidence (e.g. active ASN status like IN_TRANSIT or DELIVERED/expected expected delivery date in today/tomorrow)
-    let severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' = 'MEDIUM';
-    if (daysOverdue > 7) {
-      severity = 'CRITICAL';
-    } else if (daysOverdue >= 3) {
-      severity = 'HIGH';
-    } else if (daysOverdue >= 1) {
-      severity = 'MEDIUM';
-    } else {
-      severity = 'LOW';
-    }
+    // Severity Logic using shared calculation utility
+    const hasRecoveryEvidence = !!(activeAsn && ['IN_TRANSIT'].includes(activeAsn.status));
+    const severity = calculateExceptionSeverity(daysOverdue, hasRecoveryEvidence);
 
-    // Check recovery evidence for Low: if active ASN is 'IN_TRANSIT' or 'DELAYED' but expected delivery is very soon
-    if (severity !== 'CRITICAL' && activeAsn && ['IN_TRANSIT'].includes(activeAsn.status)) {
-      severity = 'LOW';
+    // Derivation of confirmationControlKey with revised fallback warning check
+    const itemConfKey = poItem.confirmation_control_key;
+    const schedConfKey = schedule.confirmation_control_key;
+
+    let confirmationControlKey = null;
+    if (itemConfKey !== undefined && itemConfKey !== null) {
+      confirmationControlKey = itemConfKey.trim();
+    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
+      confirmationControlKey = schedConfKey.trim();
+      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${ex.po_number} Item ${ex.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
     }
 
     // Dynamic Root Cause Diagnosis for Phase 1B Milestone 1 Sourced
@@ -593,6 +609,7 @@ async function fetchJoinedWorklist(): Promise<OverdueWorklistItem[]> {
       assigned_buyer: ex.assigned_buyer || poHeader.created_by || 'Unknown',
       root_cause: ex.root_cause || `PO line overdue by ${daysOverdue} days.`,
       delay_category: delayCategory,
+      confirmationControlKey: confirmationControlKey || '',
       on_time_delivery_pct: parseFloat(supplier.on_time_delivery_pct || '0'),
       avg_response_days: parseFloat(supplier.avg_response_days || '0'),
       risk_score: parseFloat(supplier.risk_score || '0'),
@@ -998,7 +1015,18 @@ export async function getExceptionDetail(
     return dateB.localeCompare(dateA);
   });
 
-  const requiresAck = itemSchedules.some(s => s.confirmation_control_key === 'ZACK');
+  // Derivation of confirmationControlKey with revised fallback warning check
+  const itemConfKey = poItem.confirmation_control_key;
+  const schedConfKey = itemSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
+
+  let confirmationControlKey = null;
+  if (itemConfKey !== undefined && itemConfKey !== null) {
+    confirmationControlKey = itemConfKey.trim();
+  } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
+    confirmationControlKey = schedConfKey.trim();
+    console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${poNumber} Item ${itemNumber}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+  }
+  const requiresAck = confirmationControlKey === 'ZACK';
   let ackDetails = null;
   if (ack) {
     ackDetails = {
@@ -1445,6 +1473,7 @@ export async function getDashboardOverviewDetails(): Promise<DashboardOverviewDe
 export interface AcknowledgementWorklistItem {
   po_number: string;
   item_number: string;
+  confirmationControlKey?: string;
   acknowledgement_status: string;
   acknowledged_qty: number;
   committed_delivery_date: string;
@@ -1537,11 +1566,24 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
   // Unified list of raw acknowledgements (real + derived)
   const unifiedAcks = [...acksRaw];
 
-  // For each schedule line with ZACK, if not in acksRaw, add a missing acknowledgement row
+  // For each schedule line, join to items to find confirmation_control_key (with schedule-line level fallback)
   for (const s of schedulesRaw) {
-    if (s.confirmation_control_key === 'ZACK') {
-      const paddedItem = padItemNumber(s.item_number);
-      const key = `${s.po_number}_${paddedItem}`;
+    const paddedItem = padItemNumber(s.item_number);
+    const key = `${s.po_number}_${paddedItem}`;
+    const poItem = itemsMap.get(key) || {};
+    
+    const itemConfKey = poItem.confirmation_control_key;
+    const schedConfKey = s.confirmation_control_key;
+
+    let confirmationControlKey = null;
+    if (itemConfKey !== undefined && itemConfKey !== null) {
+      confirmationControlKey = itemConfKey.trim();
+    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
+      confirmationControlKey = schedConfKey.trim();
+      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${s.po_number} Item ${s.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    }
+
+    if (confirmationControlKey === 'ZACK') {
       if (!acksKeys.has(key)) {
         unifiedAcks.push({
           po_number: s.po_number,
@@ -1575,6 +1617,19 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
     const daysOverdue = exInfo.days_past_due ? parseInt(exInfo.days_past_due, 10) : 0;
     const followups = parseInt(ack.buyer_followup_count || '0', 10);
     const exception_id = exInfo.exception_id || `EX_ACK_${ack.po_number}_${ack.item_number}`;
+
+    // Derivation of confirmationControlKey with revised fallback warning check
+    const itemConfKey = poItem.confirmation_control_key;
+    const childSchedules = schedulesRaw.filter(s => s.po_number === ack.po_number && padItemNumber(s.item_number) === padItemNumber(ack.item_number));
+    const schedConfKey = childSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
+
+    let confirmationControlKey = null;
+    if (itemConfKey !== undefined && itemConfKey !== null) {
+      confirmationControlKey = itemConfKey.trim();
+    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
+      confirmationControlKey = schedConfKey.trim();
+      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${ack.po_number} Item ${ack.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    }
 
     // SME Severity Logic Rules
     let severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' = 'LOW';
@@ -1614,6 +1669,7 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
     return {
       po_number: ack.po_number,
       item_number: ack.item_number,
+      confirmationControlKey: confirmationControlKey || '',
       acknowledgement_status: ackStatus,
       acknowledged_qty: parseFloat(ack.acknowledged_qty || '0'),
       committed_delivery_date: ack.committed_delivery_date || '',
@@ -1639,6 +1695,8 @@ async function fetchJoinedAcknowledgementWorklist(): Promise<AcknowledgementWork
       priorityLevel
     };
   });
+
+
 
   return joinedList.filter(item => {
     const itemKey = `${item.po_number}_${item.item_number}`;
@@ -3233,9 +3291,7 @@ export async function getControlTowerSummary(): Promise<ControlTowerSummary> {
     // overdue POs for this plant
     const overdueCount = exceptionsRaw.filter((e: any) => e.plant === plant && e.exception_type === 'PO_OVERDUE' && e.status !== 'RESOLVED').length;
 
-    let status: 'OPTIMAL' | 'WARNING' | 'RISK' = 'OPTIMAL';
-    if (exCount > 4 || shortCount > 3) status = 'RISK';
-    else if (exCount > 0 || shortCount > 0 || overdueCount > 0) status = 'WARNING';
+    const status = calculatePlantStatus(exCount, shortCount, overdueCount);
 
     return {
       plant,
@@ -3253,26 +3309,22 @@ export async function getControlTowerSummary(): Promise<ControlTowerSummary> {
   const systemStatus: ControlTowerSystemStatus[] = [
     {
       name: 'Overdue PO Agent',
-      status: overduePoLines > 10 ? ('BREACH' as const) : overduePoLines > 0 ? ('ATTENTION' as const) : ('OPERATIONAL' as const),
-      indicator: overduePoLines > 10 ? '🚨 Overdue' : overduePoLines > 0 ? '⚠️ Delay Alert' : '🟢 Optimal',
+      ...calculateSystemAgentStatus('Overdue PO Agent', overduePoLines),
       details: `${overduePoLines} overdue lines under surveillance ($${overduePoValue.toLocaleString()} active risk)`
     },
     {
       name: 'Supplier Acknowledgement Agent',
-      status: missingAcks > 8 ? ('BREACH' as const) : missingAcks > 0 ? ('ATTENTION' as const) : ('OPERATIONAL' as const),
-      indicator: missingAcks > 8 ? '🚨 Breach' : missingAcks > 0 ? '⚠️ Pending' : '🟢 Confirmed',
+      ...calculateSystemAgentStatus('Supplier Acknowledgement Agent', missingAcks),
       details: `${missingAcks} missing supplier responses ($${(missingAcks * 4500).toLocaleString()} latency value)`
     },
     {
       name: 'Part Availability Agent',
-      status: totalPartShortages > 3 ? ('BREACH' as const) : totalPartShortages > 0 ? ('ATTENTION' as const) : ('OPERATIONAL' as const),
-      indicator: totalPartShortages > 3 ? '🚨 Stock Out' : totalPartShortages > 0 ? '⚠️ Warning' : '🟢 Optimal',
+      ...calculateSystemAgentStatus('Part Availability Agent', totalPartShortages),
       details: `${totalPartShortages} critical safety stock breaches active across warehouses`
     },
     {
       name: 'Exception Analytics Engine',
-      status: activeExceptions > 15 ? ('BREACH' as const) : activeExceptions > 0 ? ('ATTENTION' as const) : ('OPERATIONAL' as const),
-      indicator: activeExceptions > 15 ? '🚨 High Load' : '🟢 Stable',
+      ...calculateSystemAgentStatus('Exception Analytics Engine', activeExceptions),
       details: `Tracking ${activeExceptions} active exceptions ($${financialExposure.toLocaleString()} total exposure)`
     },
     {
@@ -3283,40 +3335,26 @@ export async function getControlTowerSummary(): Promise<ControlTowerSummary> {
     },
     {
       name: 'Planner Collaboration Agent',
-      status: unresolvedCoord > 5 ? ('BREACH' as const) : unresolvedCoord > 0 ? ('ATTENTION' as const) : ('OPERATIONAL' as const),
-      indicator: unresolvedCoord > 5 ? '🚨 High Risk' : unresolvedCoord > 0 ? '⚠️ Warning' : '🟢 Active',
+      ...calculateSystemAgentStatus('Planner Collaboration Agent', unresolvedCoord),
       details: `Managing ${unresolvedCoord} active buyer-planner coordination threads`
     }
   ];
 
-  // Build Recent Activity Log
-  const recentActivity: ControlTowerActivityLog[] = [
-    {
-      timestamp: '10:42 AM',
-      message: 'Safety stock breach: Austin Plant (P001) triggered safety stock violation on copper wire lines.',
-      type: 'WARNING' as const
-    },
-    {
-      timestamp: '09:15 AM',
-      message: 'Automatic alert dispatched: PO 45000084 overdue warning notification routed to supplier S002.',
-      type: 'INFO' as const
-    },
-    {
-      timestamp: '08:30 AM',
-      message: 'Exception EX084 resolved: Buyer B001 successfully confirmed delivery date update for critical part.',
-      type: 'SUCCESS' as const
-    },
-    {
-      timestamp: 'Yesterday',
-      message: 'New exception logged: price mismatch detected on PO 45000213 for Shanghai plant (P003).',
-      type: 'WARNING' as const
-    },
-    {
-      timestamp: '2 days ago',
-      message: 'Supplier reply captured: S004 acknowledged PO 45000109 with revised ship date (within tolerance).',
-      type: 'SUCCESS' as const
-    }
-  ];
+  // Build Recent Activity Log dynamically from system data sources
+  const reminders = readJsonFile('app-supplier-reminders.json');
+  const actions = readJsonFile('app-actions.json');
+  const responses = readJsonFile('app-supplier-responses.json');
+  const recommendations = readJsonFile('app-recommendations.json');
+
+  const recentActivity = generateDynamicRecentActivity(
+    reminders,
+    actions,
+    responses,
+    recommendations,
+    partsRaw,
+    exceptionsRaw,
+    TODAY_DATE
+  );
 
   return {
     metrics: {

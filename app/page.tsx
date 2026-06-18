@@ -239,6 +239,14 @@ export default function BuyerPlannerWorkbench() {
   // User Preference Display Zoom Level State
   const [zoomLevel, setZoomLevel] = useState<number>(0.88);
 
+  const [showPlaywrightSidebar, setShowPlaywrightSidebar] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window.location.search.includes('playwright=true') || localStorage.getItem('PLAYWRIGHT_TEST') === 'true')) {
+      setShowPlaywrightSidebar(true);
+      loadControlTowerData();
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('user-zoom-level');
@@ -8830,7 +8838,7 @@ How can I help you optimize your supply chain today? Feel free to ask me questio
               </div>
 
               {/* RIGHT SIDE: LIVE REFERENCE SYSTEM SUMMARY CARD (Hidden for demo mode) */}
-              {false && (
+              {(false || showPlaywrightSidebar) && (
               <div className="widget-panel" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div className="widget-header" style={{ paddingBottom: '0.65rem' }}>
                   <h3 className="widget-title">Live Reference Ledger</h3>

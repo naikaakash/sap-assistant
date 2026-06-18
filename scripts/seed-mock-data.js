@@ -379,12 +379,15 @@ mockPos.forEach(poOrItem => {
       
       const poLineVal = itemOrderedQty * (item.unit_price || 0);
 
+      const itemRequiresAck = scheduleLines.some(sl => sl.acknowledgement_required === 'Y') || item.acknowledgement_required === 'Y';
+
       // 2. Item
       poItems.push([
         poNo, itemNo, matId, item.material_service_description, item.plant, 'SL01',
         itemOrderedQty, isService ? 'HR' : 'PC', (item.unit_price !== null && item.unit_price !== undefined) ? item.unit_price.toFixed(2) : '', '1', 
         poLineVal.toFixed(2), itemDeliveryDate, isService ? 'SERVICE' : 'STANDARD',
-        isService ? 'K' : '', deletionFlag, deliveryCompletedFlag, 'Y', 'Y'
+        isService ? 'K' : '', deletionFlag, deliveryCompletedFlag, 'Y', 'Y',
+        itemRequiresAck ? 'ZACK' : ''
       ]);
 
       // Loop schedule lines
@@ -544,7 +547,8 @@ mockPos.forEach(poOrItem => {
       poNo, itemNo, matId, item.material_service_description, item.plant, 'SL01',
       item.ordered_quantity, isService ? 'HR' : 'PC', (item.unit_price !== null && item.unit_price !== undefined) ? item.unit_price.toFixed(2) : '', '1', 
       poLineVal.toFixed(2), item.delivery_date, isService ? 'SERVICE' : 'STANDARD',
-      isService ? 'K' : '', deletionFlag, deliveryCompletedFlag, 'Y', 'Y'
+      isService ? 'K' : '', deletionFlag, deliveryCompletedFlag, 'Y', 'Y',
+      item.acknowledgement_required === 'Y' ? 'ZACK' : ''
     ]);
 
     // 3. Schedule Line
@@ -587,7 +591,7 @@ writeCsvFile('purchase_order_headers.csv',
 );
 
 writeCsvFile('purchase_order_items.csv',
-  ['po_number', 'item_number', 'material_id', 'material_description', 'plant', 'storage_location', 'order_qty', 'uom', 'net_price', 'price_unit', 'item_value', 'delivery_date', 'item_category', 'account_assignment_category', 'deletion_flag', 'delivery_completed_flag', 'invoice_receipt_flag', 'goods_receipt_flag'],
+  ['po_number', 'item_number', 'material_id', 'material_description', 'plant', 'storage_location', 'order_qty', 'uom', 'net_price', 'price_unit', 'item_value', 'delivery_date', 'item_category', 'account_assignment_category', 'deletion_flag', 'delivery_completed_flag', 'invoice_receipt_flag', 'goods_receipt_flag', 'confirmation_control_key'],
   poItems
 );
 

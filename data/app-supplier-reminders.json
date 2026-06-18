@@ -74,5 +74,30 @@
     "updatedBy": "buyer.test",
     "updatedAt": "2026-06-11T10:00:00.000Z",
     "version": 1
+  },
+  {
+    "reminderId": "691ab2e3-ba86-498d-a021-06c7d09504f5",
+    "recommendationId": "rec-4500002008-00010",
+    "purchaseOrderNumber": "4500002008",
+    "purchaseOrderItem": "00010",
+    "supplierId": "VEND-001",
+    "supplierName": "Sterling Electronics",
+    "supplierEmail": "alice@sterlingelectronics.com",
+    "channel": "EMAIL",
+    "reminderStatus": "SENT",
+    "subject": "Reminder: Action Required on PO 4500002008 / Item 00010",
+    "bodyText": "Dear Sterling Electronics Team,\n\nThis is a query regarding Purchase Order 4500002008, Item 00010.\n\nDiscrepancy Details:\nOverdue and reminder already sent once\n\nRecommended Action:\nSend urgent reminder to supplier.\n\nPlease verify your schedule and confirm when we can expect delivery.\n\nBest regards,\nBuyer & Planner Team",
+    "sentAt": "2026-06-18T15:13:52.024Z",
+    "createdBy": "buyer.demo",
+    "createdAt": "2026-06-18T15:13:52.024Z",
+    "updatedBy": "buyer.demo",
+    "updatedAt": "2026-06-18T15:13:52.024Z",
+    "version": 1,
+    "ccEmails": [],
+    "sendMode": "MOCK",
+    "deliveryStatus": "MOCK_SENT",
+    "providerMessage": "Mock send complete: reminder logged. No Outlook email was sent.",
+    "loggedAt": "2026-06-18T15:13:52.024Z",
+    "sentBy": "buyer.demo"
   }
 ]

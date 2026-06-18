@@ -186,6 +186,7 @@ export interface PurchaseOrderLine {
   openQuantity: number;         // Max(0, orderedQuantity − receivedQuantity)
   netPrice: number;             // net_price from purchase_order_items.csv
   openValue: number;            // openQuantity * netPrice
+  confirmationControlKey?: string; // confirmation_control_key from purchase_order_items.csv (with schedule-line fallback)
 
   // Dates
   requestedDeliveryDate: string;   // due_date / delivery_date (date-shifted)
@@ -252,6 +253,7 @@ export interface PurchaseOrderLineDetail extends PurchaseOrderLine {
 export interface SupplierAcknowledgement {
   poNumber: string;
   itemNumber: string;
+  confirmationControlKey?: string;
   acknowledgementStatus: string;    // ACKNOWLEDGED / MISSING / PRICE_DISPUTE / …
   acknowledgedQty: number;
   committedDeliveryDate: string;

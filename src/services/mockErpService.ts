@@ -94,6 +94,7 @@ function mapToPurchaseOrderLine(item: OverdueWorklistItem): PurchaseOrderLine {
     openQuantity: item.open_quantity,
     netPrice: item.net_price,
     openValue: item.open_value,
+    confirmationControlKey: item.confirmationControlKey,
 
     requestedDeliveryDate: item.requested_delivery_date,
 
@@ -204,6 +205,7 @@ function mapToSupplierAcknowledgement(item: AcknowledgementWorklistItem): Suppli
   return {
     poNumber: item.po_number,
     itemNumber: item.item_number,
+    confirmationControlKey: item.confirmationControlKey,
     acknowledgementStatus: item.acknowledgement_status,
     acknowledgedQty: item.acknowledged_qty,
     committedDeliveryDate: item.committed_delivery_date,
@@ -573,7 +575,18 @@ export async function getPurchaseOrderRegisterRaw(): Promise<any[]> {
     const openQuantity = Math.max(0, orderedQuantity - receivedQuantity);
 
     const itemSchedules = schedules.filter(s => s.po_number === item.po_number && padItemNumber(s.item_number) === padItemNumber(item.item_number));
-    const requiresAck = itemSchedules.some(s => s.confirmation_control_key === 'ZACK');
+    
+    const itemConfKey = item.confirmation_control_key;
+    const schedConfKey = itemSchedules.find(s => s.confirmation_control_key)?.confirmation_control_key;
+
+    let confirmationControlKey = null;
+    if (itemConfKey !== undefined && itemConfKey !== null) {
+      confirmationControlKey = itemConfKey.trim();
+    } else if (schedConfKey !== undefined && schedConfKey !== null && schedConfKey.trim() !== '') {
+      confirmationControlKey = schedConfKey.trim();
+      console.warn(`[Migration Compatibility Warning] purchase_order_items.confirmation_control_key is missing for PO ${item.po_number} Item ${item.item_number}, falling back to po_schedule_lines.confirmation_control_key (${schedConfKey})`);
+    }
+    const requiresAck = confirmationControlKey === 'ZACK';
 
     return {
       poNumber: item.po_number,
@@ -593,7 +606,8 @@ export async function getPurchaseOrderRegisterRaw(): Promise<any[]> {
       acknowledgementRequired: requiresAck ? 'Y' : 'N',
       committedDeliveryDate: ack ? (ack.committed_delivery_date || '') : '',
       receivedQuantity,
-      openQuantity
+      openQuantity,
+      confirmationControlKey: confirmationControlKey || ''
     };
   });
 }

@@ -223,7 +223,8 @@ function runReset() {
     poItems.push([
       poNumber, itemNumber, materialId, materialDesc, plant, 'SL01',
       orderQty, 'PC', netPrice.toFixed(2), '1', itemValue, deliveryDate,
-      '0', '', 'N', 'N', 'Y', 'Y'
+      '0', '', 'N', 'N', 'Y', 'Y',
+      ackStatus ? 'ZACK' : ''
     ]);
 
     // 3. Schedule Line
@@ -398,7 +399,7 @@ function runReset() {
   );
 
   writeCsvFile('purchase_order_items.csv',
-    ['po_number', 'item_number', 'material_id', 'material_description', 'plant', 'storage_location', 'order_qty', 'uom', 'net_price', 'price_unit', 'item_value', 'delivery_date', 'item_category', 'account_assignment_category', 'deletion_flag', 'delivery_completed_flag', 'invoice_receipt_flag', 'goods_receipt_flag'],
+    ['po_number', 'item_number', 'material_id', 'material_description', 'plant', 'storage_location', 'order_qty', 'uom', 'net_price', 'price_unit', 'item_value', 'delivery_date', 'item_category', 'account_assignment_category', 'deletion_flag', 'delivery_completed_flag', 'invoice_receipt_flag', 'goods_receipt_flag', 'confirmation_control_key'],
     poItems
   );
 
